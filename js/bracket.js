@@ -413,9 +413,19 @@
     const winner = match.winner ? getTeamById(data, match.winner) : null;
     const t1n  = t1?.name || (match.team2 === null ? "BYE" : "TBD");
     const t2n  = t2?.name || (match.team1 !== null && !match.team2 ? "BYE" : "TBD");
-    const t1c  = t1?.color || "#4a5d80", t2c = t2?.color || "#4a5d80";
-    const t1i  = t1?.shortName || t1n.slice(0, 3).toUpperCase();
-    const t2i  = t2?.shortName || t2n.slice(0, 3).toUpperCase();
+    const t1c  = t1?.color || "#3b82f6", t2c = t2?.color || "#ef4444";
+    const t1i  = t1?.shortName || (match.team2 === null ? "BYE" : "TBD");
+    const t2i  = t2?.shortName || (match.team1 !== null && !match.team2 ? "BYE" : "TBD");
+
+    const isT1Winner = match.winner && match.winner === match.team1;
+    const isT2Winner = match.winner && match.winner === match.team2;
+
+    const stageIcon = match.round === 3 ? "🏆" : (match.round === 2 ? "🔥" : "⚡");
+
+    const titleEl = matchModal.querySelector(".modal-title");
+    if (titleEl) {
+      titleEl.innerHTML = `<span class="modal-stage-badge">${stageIcon} ${match.roundName.toUpperCase()} · MATCH ${match.id.replace("m","")}</span>`;
+    }
 
     const body = matchModal.querySelector(".modal-body");
 
@@ -424,49 +434,61 @@
       // INTERACTIVE ADMIN CONTROLS IN BRACKET MODAL
       // ═════════════════════════════════════════════════
       body.innerHTML = `
-        <div style="background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.25);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:16px;font-size:0.78rem;color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;display:flex;align-items:center;gap:6px;">
-          <span>👑</span> MODE ADMIN — PILIH PEMENANG & UBAH SKOR LANGSUNG
+        <div style="background:linear-gradient(90deg,rgba(212,168,67,0.15),rgba(20,29,53,0.4));border:1px solid rgba(212,168,67,0.35);border-radius:10px;padding:8px 14px;margin-bottom:18px;font-size:0.8rem;color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;display:flex;align-items:center;justify-content:space-between;">
+          <span style="display:flex;align-items:center;gap:6px;">👑 <strong>MODE ADMIN</strong> · Quick Match Manager</span>
+          <span style="font-size:0.7rem;color:var(--text-muted);font-weight:600;">Auto-sync Cloud</span>
         </div>
 
-        <div class="modal-matchup" style="margin-bottom:14px;">
-          <div class="modal-team">
-            <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t1c}cc,${t1c}88)">${t1i}</div>
-            <div class="modal-team-name" style="color:${t1c}">${t1n}</div>
+        <!-- MATCHUP ARENA -->
+        <div class="modal-matchup-arena">
+          <div class="modal-team-card ${isT1Winner ? 'is-winner' : (isT2Winner ? 'is-loser' : '')}">
+            <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t1c}dd,${t1c}88);border:2px solid ${t1c};">
+              ${isT1Winner ? '<span class="team-crown-icon">👑</span>' : ''}
+              ${t1i}
+            </div>
+            <div class="modal-team-name" style="color:${t1 ? t1c : 'var(--text-muted)'}">${t1n}</div>
           </div>
-          <div class="modal-vs">VS</div>
-          <div class="modal-team">
-            <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t2c}cc,${t2c}88)">${t2i}</div>
-            <div class="modal-team-name" style="color:${t2c}">${t2n}</div>
+
+          <div class="modal-vs-badge">
+            <div class="vs-circle">VS</div>
+          </div>
+
+          <div class="modal-team-card ${isT2Winner ? 'is-winner' : (isT1Winner ? 'is-loser' : '')}">
+            <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t2c}dd,${t2c}88);border:2px solid ${t2c};">
+              ${isT2Winner ? '<span class="team-crown-icon">👑</span>' : ''}
+              ${t2i}
+            </div>
+            <div class="modal-team-name" style="color:${t2 ? t2c : 'var(--text-muted)'}">${t2n}</div>
           </div>
         </div>
 
-        <!-- WINNER SELECTION BUTTONS -->
+        <!-- WINNER SELECTION (1-CLICK) -->
         <div style="margin-bottom:16px;">
-          <div style="font-size:0.75rem;font-weight:700;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;font-family:'Rajdhani',sans-serif;margin-bottom:6px;">
-            Pilih Pemenang (Klik Tim):
+          <div style="font-size:0.75rem;font-weight:700;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;font-family:'Rajdhani',sans-serif;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+            <span>👑</span> PILIH PEMENANG PERTANDINGAN:
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <button type="button" id="btn-pick-win-1" class="btn ${match.winner === match.team1 && match.team1 ? 'btn-primary' : 'btn-secondary'}"
-              style="justify-content:center;padding:10px 8px;font-size:0.86rem;${!match.team1 ? 'opacity:0.4;pointer-events:none;' : ''}">
+              style="justify-content:center;padding:12px 10px;font-size:0.88rem;${!match.team1 ? 'opacity:0.4;pointer-events:none;' : ''}">
               👑 ${t1n}
             </button>
             <button type="button" id="btn-pick-win-2" class="btn ${match.winner === match.team2 && match.team2 ? 'btn-primary' : 'btn-secondary'}"
-              style="justify-content:center;padding:10px 8px;font-size:0.86rem;${!match.team2 ? 'opacity:0.4;pointer-events:none;' : ''}">
+              style="justify-content:center;padding:12px 10px;font-size:0.88rem;${!match.team2 ? 'opacity:0.4;pointer-events:none;' : ''}">
               👑 ${t2n}
             </button>
           </div>
         </div>
 
         <!-- SCORES & TIME -->
-        <div style="background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;">
-          <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;">
+        <div style="background:rgba(10,14,26,0.6);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;">
             <div style="text-align:center;">
-              <div style="font-size:0.68rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:4px;">SKOR TIM 1</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:4px;">SKOR ${t1i}</div>
               <input type="number" id="quick-score-1" class="score-input" min="0" max="99" value="${match.score1 ?? ''}" placeholder="0">
             </div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--text-muted);padding-top:14px;">:</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--text-muted);padding-top:14px;">:</div>
             <div style="text-align:center;">
-              <div style="font-size:0.68rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:4px;">SKOR TIM 2</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:4px;">SKOR ${t2i}</div>
               <input type="number" id="quick-score-2" class="score-input" min="0" max="99" value="${match.score2 ?? ''}" placeholder="0">
             </div>
           </div>
@@ -486,7 +508,7 @@
         <!-- ACTIONS -->
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
           <button type="button" id="btn-quick-reset" class="btn btn-danger btn-sm">↺ Reset Pemenang</button>
-          <button type="button" id="btn-quick-save" class="btn btn-primary" style="padding:9px 18px;">💾 Simpan & Update Live</button>
+          <button type="button" id="btn-quick-save" class="btn btn-primary" style="padding:10px 20px;font-size:0.9rem;">💾 Simpan & Update Live</button>
         </div>
       `;
 
@@ -539,40 +561,73 @@
 
     } else {
       // ═════════════════════════════════════════════════
-      // READ-ONLY PUBLIC VIEW
+      // SPECTATOR / PUBLIC CHAMPIONSHIP ARENA VIEW
       // ═════════════════════════════════════════════════
       body.innerHTML = `
-        <div class="modal-matchup">
-          <div class="modal-team">
-            <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t1c}cc,${t1c}88)">${t1i}</div>
-            <div class="modal-team-name">${t1n}</div>
+        <!-- MATCHUP ARENA -->
+        <div class="modal-matchup-arena">
+          <div class="modal-team-card ${isT1Winner ? 'is-winner' : (isT2Winner ? 'is-loser' : '')}">
+            <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t1c}dd,${t1c}88);border:2px solid ${t1c};">
+              ${isT1Winner ? '<span class="team-crown-icon">👑</span>' : ''}
+              ${t1i}
+            </div>
+            <div class="modal-team-name" style="color:${t1 ? t1c : 'var(--text-muted)'}">${t1n}</div>
           </div>
-          <div class="modal-vs">VS</div>
-          <div class="modal-team">
-            <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t2c}cc,${t2c}88)">${t2i}</div>
-            <div class="modal-team-name">${t2n}</div>
-          </div>
-        </div>
-        ${match.score1 !== null || match.score2 !== null ? `
-        <div class="modal-score">
-          <span class="score-display" style="color:${match.winner===match.team1?'var(--gold)':'var(--text-primary)'}">${match.score1 ?? "—"}</span>
-          <span class="score-separator">:</span>
-          <span class="score-display" style="color:${match.winner===match.team2?'var(--gold)':'var(--text-primary)'}">${match.score2 ?? "—"}</span>
-        </div>` : ""}
-        <div class="modal-info-grid">
-          <div class="modal-info-item"><div class="modal-info-label">🗓 Babak</div><div class="modal-info-value">${match.roundName}</div></div>
-          <div class="modal-info-item"><div class="modal-info-label">⏰ Waktu</div><div class="modal-info-value">${match.time || "TBD"}</div></div>
-          <div class="modal-info-item" style="grid-column:1/-1"><div class="modal-info-label">📅 Tanggal</div><div class="modal-info-value">${match.date || "TBD"}</div></div>
-        </div>
-        ${winner ? `
-        <div class="modal-winner-badge">
-          <span>👑</span>
-          <div><div class="label">PEMENANG</div><div class="value">${winner.name}</div></div>
-        </div>` : ""}
 
-        <div style="margin-top:16px;text-align:center;">
-          <a href="#" id="link-quick-admin" style="font-size:0.75rem;color:var(--text-muted);text-decoration:none;font-family:'Rajdhani',sans-serif;">
-            🔐 Login Admin untuk Edit Pertandingan Langsung
+          <div class="modal-vs-badge">
+            <div class="vs-circle">VS</div>
+          </div>
+
+          <div class="modal-team-card ${isT2Winner ? 'is-winner' : (isT1Winner ? 'is-loser' : '')}">
+            <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t2c}dd,${t2c}88);border:2px solid ${t2c};">
+              ${isT2Winner ? '<span class="team-crown-icon">👑</span>' : ''}
+              ${t2i}
+            </div>
+            <div class="modal-team-name" style="color:${t2 ? t2c : 'var(--text-muted)'}">${t2n}</div>
+          </div>
+        </div>
+
+        <!-- SCOREBOARD -->
+        <div class="modal-scoreboard">
+          <span class="score-digit ${isT1Winner ? 'winner-score' : ''}">
+            ${match.score1 !== null && match.score1 !== undefined ? match.score1 : '—'}
+          </span>
+          <span class="score-colon">:</span>
+          <span class="score-digit ${isT2Winner ? 'winner-score' : ''}">
+            ${match.score2 !== null && match.score2 !== undefined ? match.score2 : '—'}
+          </span>
+        </div>
+
+        <!-- INFO TILES -->
+        <div class="modal-info-grid">
+          <div class="modal-info-tile">
+            <div class="modal-info-label">🏟️ Babak Pertandingan</div>
+            <div class="modal-info-val">${match.roundName}</div>
+          </div>
+          <div class="modal-info-tile">
+            <div class="modal-info-label">⏰ Waktu Kickoff</div>
+            <div class="modal-info-val" style="color:var(--gold)">${match.time || "TBD"}</div>
+          </div>
+          <div class="modal-info-tile full-width">
+            <div class="modal-info-label">📅 Tanggal Pertandingan</div>
+            <div class="modal-info-val">${match.date || "TBD"}</div>
+          </div>
+        </div>
+
+        <!-- WINNER REVEAL -->
+        ${winner ? `
+        <div class="modal-winner-banner">
+          <div class="crown-box">👑</div>
+          <div>
+            <div class="winner-title">PEMENANG MATCH</div>
+            <div class="winner-team">${winner.name}</div>
+          </div>
+        </div>` : ''}
+
+        <!-- QUICK ADMIN LOGIN LINK -->
+        <div style="margin-top:20px;text-align:center;">
+          <a href="#" id="link-quick-admin" style="display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--gold);text-decoration:none;font-family:'Rajdhani',sans-serif;font-weight:700;background:rgba(212,168,67,0.08);padding:6px 14px;border-radius:99px;border:1px solid rgba(212,168,67,0.25);transition:all var(--transition);">
+            🔐 Login Admin untuk Edit Pertandingan Ini Langsung
           </a>
         </div>
       `;
@@ -590,7 +645,6 @@
       });
     }
 
-    matchModal.querySelector(".modal-title").textContent = match.roundName.toUpperCase();
     matchModal.classList.add("open");
     document.body.style.overflow = "hidden";
   }

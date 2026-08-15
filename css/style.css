@@ -701,20 +701,21 @@ p, span, li { line-height: 1.6; }
 .status-badge.tbd      { background: rgba(255,255,255,0.05);color: var(--text-muted); border: 1px solid rgba(255,255,255,0.08); }
 
 /* ============================================================
-   MATCH MODAL
+   MATCH MODAL (CHAMPIONSHIP ARENA THEME)
    ============================================================ */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
+  background: rgba(5, 8, 16, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   z-index: 200;
   display: grid;
   place-items: center;
-  padding: 1rem;
+  padding: 1.25rem;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition);
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-overlay.open {
@@ -723,15 +724,26 @@ p, span, li { line-height: 1.6; }
 }
 
 .modal-box {
-  background: var(--navy-card);
-  border: 1px solid var(--navy-border);
-  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #16203a 0%, #0d1527 100%);
+  border: 1px solid rgba(212, 168, 67, 0.35);
+  border-radius: 20px;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   overflow: hidden;
-  transform: scale(0.95) translateY(20px);
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  transform: scale(0.92) translateY(24px);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212, 168, 67, 0.15);
+  position: relative;
+}
+
+.modal-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 
 .modal-overlay.open .modal-box {
@@ -739,115 +751,246 @@ p, span, li { line-height: 1.6; }
 }
 
 .modal-head {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--navy-border);
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: rgba(10, 14, 26, 0.5);
 }
 
-.modal-title { font-size: 1.1rem; color: var(--gold); }
+.modal-stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(212, 168, 67, 0.12);
+  border: 1px solid rgba(212, 168, 67, 0.3);
+  border-radius: 99px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .modal-close-btn {
-  width: 32px; height: 32px;
-  border: none;
-  background: var(--navy-hover);
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--text-secondary);
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   display: grid;
   place-items: center;
   font-size: 1.1rem;
   transition: all var(--transition);
 }
-.modal-close-btn:hover { background: rgba(239,68,68,0.15); color: var(--red); }
-
-.modal-body { padding: 24px; }
-
-.modal-matchup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--red);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: rotate(90deg);
 }
 
-.modal-team {
-  flex: 1;
+.modal-body {
+  padding: 24px;
+}
+
+/* ── Matchup Arena ── */
+.modal-matchup-arena {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.modal-team-card {
+  background: rgba(10, 14, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 16px 12px;
   text-align: center;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-team-card.is-winner {
+  border-color: rgba(212, 168, 67, 0.5);
+  background: linear-gradient(180deg, rgba(212, 168, 67, 0.1) 0%, rgba(10, 14, 26, 0.7) 100%);
+  box-shadow: 0 0 20px rgba(212, 168, 67, 0.15);
+}
+
+.modal-team-card.is-loser {
+  opacity: 0.5;
 }
 
 .modal-team-avatar {
-  width: 56px; height: 56px;
-  border-radius: var(--radius-md);
-  margin: 0 auto 8px;
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  margin: 0 auto 10px;
   display: grid;
   place-items: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.35rem;
   color: #fff;
+  letter-spacing: 0.05em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.modal-team-avatar .team-crown-icon {
+  position: absolute;
+  top: -12px;
+  font-size: 1.2rem;
+  filter: drop-shadow(0 2px 8px rgba(212, 168, 67, 0.6));
 }
 
 .modal-team-name {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--text-primary);
+  letter-spacing: 0.03em;
+  line-height: 1.2;
 }
 
-.modal-vs {
+/* VS Badge */
+.modal-vs-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.vs-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a2744, #0a0e1a);
+  border: 2px solid var(--gold);
+  display: grid;
+  place-items: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.8rem;
-  color: var(--text-muted);
-  letter-spacing: 0.1em;
+  font-size: 1.15rem;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 16px rgba(212, 168, 67, 0.3);
 }
 
-.modal-score {
+/* Score Board */
+.modal-scoreboard {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
+  background: rgba(10, 14, 26, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px 20px;
   margin-bottom: 20px;
 }
 
-.score-display {
+.score-digit {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3rem;
-  letter-spacing: 0.05em;
+  font-size: 3.2rem;
+  line-height: 1;
   color: var(--text-primary);
-  min-width: 60px;
+  min-width: 48px;
   text-align: center;
 }
 
-.score-separator { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--text-muted); }
+.score-digit.winner-score {
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(212, 168, 67, 0.5);
+}
 
+.score-colon {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  color: var(--text-muted);
+}
+
+/* Info Tiles */
 .modal-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
-.modal-info-item {
-  background: var(--navy-mid);
-  border: 1px solid var(--navy-border);
-  border-radius: var(--radius-sm);
+.modal-info-tile {
+  background: rgba(10, 14, 26, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
   padding: 10px 14px;
 }
 
-.modal-info-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; font-family: 'Rajdhani', sans-serif; }
-.modal-info-value { font-size: 0.88rem; color: var(--text-primary); font-weight: 600; }
+.modal-info-tile.full-width {
+  grid-column: 1 / -1;
+}
 
-.modal-winner-badge {
+.modal-info-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Rajdhani', sans-serif;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: rgba(212,168,67,0.1);
-  border: 1px solid rgba(212,168,67,0.25);
-  border-radius: var(--radius-sm);
-  margin-top: 16px;
+  gap: 5px;
+  margin-bottom: 4px;
 }
 
-.modal-winner-badge .label { font-size: 0.7rem; color: var(--gold); font-weight: 700; letter-spacing: 0.08em; font-family: 'Rajdhani', sans-serif; }
-.modal-winner-badge .value { font-size: 0.9rem; color: var(--text-primary); font-weight: 700; font-family: 'Rajdhani', sans-serif; }
+.modal-info-val {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Winner Banner */
+.modal-winner-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(90deg, rgba(212, 168, 67, 0.18), rgba(212, 168, 67, 0.05));
+  border: 1px solid rgba(212, 168, 67, 0.4);
+  border-radius: 12px;
+  margin-top: 16px;
+  box-shadow: 0 4px 20px rgba(212, 168, 67, 0.1);
+}
+
+.modal-winner-banner .crown-box {
+  font-size: 1.6rem;
+}
+
+.modal-winner-banner .winner-title {
+  font-size: 0.68rem;
+  color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.modal-winner-banner .winner-team {
+  font-size: 1.1rem;
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
 
 /* ============================================================
    FOOTER
