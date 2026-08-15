@@ -160,7 +160,7 @@
         <div class="match-editor-teams">
           <div>
             <div class="field-label" style="margin-bottom:4px">Tim 1</div>
-            <div class="match-team-display" style="color:${t1c};">${t1Name}</div>
+            <div class="match-team-display" style="border-left: 3px solid ${t1c}; color:${t1c};">${t1Name}</div>
           </div>
           <div style="text-align:center">
             <div class="field-label" style="margin-bottom:4px">Skor</div>
@@ -172,23 +172,26 @@
           </div>
           <div>
             <div class="field-label" style="margin-bottom:4px">Tim 2</div>
-            <div class="match-team-display" style="color:${t2c};">${t2Name}</div>
+            <div class="match-team-display" style="border-left: 3px solid ${t2c}; color:${t2c};">${t2Name}</div>
           </div>
         </div>
 
-        <div class="match-editor-meta">
+        <div class="match-editor-datetime">
           <div class="field-group" style="margin:0">
-            <label class="field-label">Tanggal</label>
+            <label class="field-label">📅 Tanggal</label>
             <input type="text" class="field-input" placeholder="19 Agustus 2026" value="${match.date||''}" data-field="date" data-match="${match.id}">
           </div>
           <div class="field-group" style="margin:0">
-            <label class="field-label">Jam</label>
+            <label class="field-label">⏰ Jam</label>
             <input type="text" class="field-input" placeholder="17:00" value="${match.time||''}" data-field="time" data-match="${match.id}">
           </div>
-          <div class="field-group" style="margin:0">
-            <label class="field-label">Pemenang</label>
-            <select class="field-select" data-field="winner" data-match="${match.id}" style="background:var(--navy-mid);color:var(--text-primary)">${winOpts}</select>
-          </div>
+        </div>
+
+        <div class="field-group" style="margin:0">
+          <label class="field-label">👑 Pemenang Match</label>
+          <select class="winner-select field-select" data-field="winner" data-match="${match.id}">
+            ${winOpts}
+          </select>
         </div>`;
 
       container.appendChild(item);
