@@ -782,6 +782,32 @@ html, body {
 
 .player-admin-item:hover { border-color: var(--navy-border); }
 
+.player-admin-item.is-captain-row {
+  background: linear-gradient(90deg, rgba(212,168,67,0.12), var(--navy-mid));
+  border-color: rgba(212,168,67,0.3);
+}
+
+.captain-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0 2px;
+  display: grid;
+  place-items: center;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.captain-toggle-btn:hover {
+  transform: scale(1.2);
+  color: var(--gold);
+}
+.captain-toggle-btn.active {
+  color: var(--gold);
+  filter: drop-shadow(0 0 6px rgba(212,168,67,0.5));
+}
+
 .player-admin-name {
   flex: 1;
   font-size: .84rem;

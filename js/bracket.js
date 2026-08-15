@@ -297,21 +297,32 @@
       const initials = team.shortName || team.name.split(" ").map(w => w[0]).join("").slice(0, 3);
       const card = document.createElement("div");
       card.className = "team-card animate-in";
+      const captainName = team.captain || "";
+
       card.innerHTML = `
         <div class="team-card-header">
-          <div class="team-card-avatar" style="background:linear-gradient(135deg,${team.color}cc,${team.color}88)">${initials}</div>
+          <div class="team-card-avatar" style="background:linear-gradient(135deg,${team.color}cc,${team.color}88);border:2px solid ${team.color}">
+            ${initials}
+          </div>
           <div class="team-card-info">
             <div class="team-card-name">${team.name}</div>
-            <div class="team-card-count">${team.players.length} Pemain</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:2px;">
+              <span class="team-card-count">${team.players.length} Pemain</span>
+              ${captainName ? `<span style="font-size:0.72rem;color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;">⭐ C: ${captainName}</span>` : ''}
+            </div>
           </div>
         </div>
         <div class="team-card-body">
           <ul class="player-list">
-            ${team.players.map((p, i) => `
-              <li class="player-item">
-                <span class="player-num">${i + 1}</span>
-                <span>${p}</span>
-              </li>`).join("")}
+            ${team.players.map((p, i) => {
+              const isCap = captainName && p.toLowerCase().trim() === captainName.toLowerCase().trim();
+              return `
+                <li class="player-item ${isCap ? 'is-captain' : ''}">
+                  <span class="player-num" style="${isCap ? 'color:var(--gold);font-weight:800;' : ''}">${i + 1}</span>
+                  <span style="flex:1;${isCap ? 'color:#fff;font-weight:700;' : ''}">${p}</span>
+                  ${isCap ? '<span class="player-captain-tag">⭐ KAPTEN</span>' : ''}
+                </li>`;
+            }).join("")}
           </ul>
         </div>`;
       teamsGrid.appendChild(card);

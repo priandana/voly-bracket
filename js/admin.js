@@ -237,6 +237,7 @@
 
     data.teams.forEach(team => {
       const initials = team.shortName||team.name.split(" ").map(w=>w[0]).join("").slice(0,3);
+      const captainName = team.captain || "";
       const card = document.createElement("div");
       card.className = "admin-card fade-in";
       card.innerHTML = `
@@ -245,19 +246,29 @@
             <div style="width:36px;height:36px;border-radius:8px;background:${team.color};display:grid;place-items:center;font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:#fff;flex-shrink:0">${initials}</div>
             <div>
               <div class="admin-card-title">${team.name}</div>
-              <div style="font-size:.72rem;color:var(--text-muted)">${team.players.length} Pemain</div>
+              <div style="font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+                <span>${team.players.length} Pemain</span>
+                ${captainName ? `<span style="color:var(--gold);font-weight:700">⭐ ${captainName}</span>` : ''}
+              </div>
             </div>
           </div>
           <button class="btn btn-secondary btn-sm" onclick="openEditTeam('${team.id}')">✏️ Edit</button>
         </div>
         <div class="admin-card-body" style="padding:14px 18px">
           <ul class="player-admin-list">
-            ${team.players.map((p,i)=>`
-              <li class="player-admin-item" id="player-li-${team.id}-${i}">
-                <span style="font-size:.7rem;color:var(--text-muted);min-width:20px;text-align:right;font-family:'Rajdhani',sans-serif;font-weight:700;flex-shrink:0">${i+1}</span>
+            ${team.players.map((p,i)=>{
+              const isCap = captainName && p.toLowerCase().trim() === captainName.toLowerCase().trim();
+              return `
+              <li class="player-admin-item ${isCap ? 'is-captain-row' : ''}" id="player-li-${team.id}-${i}">
+                <button class="captain-toggle-btn ${isCap ? 'active' : ''}" title="${isCap ? 'Kapten saat ini' : 'Klik untuk jadikan kapten'}" onclick="setTeamCaptain('${team.id}','${p}')">
+                  ${isCap ? '⭐' : '☆'}
+                </button>
+                <span style="font-size:.7rem;color:var(--text-muted);min-width:18px;text-align:right;font-family:'Rajdhani',sans-serif;font-weight:700;flex-shrink:0">${i+1}</span>
                 <span class="player-admin-name player-editable" title="Klik untuk edit nama" onclick="startEditPlayer('${team.id}',${i})">${p}<span class="edit-hint">✏️</span></span>
+                ${isCap ? '<span class="tag tag-gold" style="font-size:0.6rem;padding:1px 5px;flex-shrink:0;">C</span>' : ''}
                 <button class="player-admin-del" onclick="deletePlayer('${team.id}',${i})">✕</button>
-              </li>`).join("")}
+              </li>`;
+            }).join("")}
           </ul>
           <div class="add-player-row" style="margin-top:10px">
             <input type="text" class="field-input" placeholder="Nama pemain baru..." id="new-player-${team.id}">
@@ -268,6 +279,17 @@
     });
 
     window.openEditTeam = id => { editingTeamId = id; openTeamModal(id); };
+
+    // ── Set Captain ─────────────────────────────────────────
+    window.setTeamCaptain = async (teamId, playerName) => {
+      const team = data.teams.find(t => t.id === teamId);
+      if (!team) return;
+      team.captain = team.captain === playerName ? null : playerName;
+      await saveData(data);
+      renderTeamsAdmin();
+      renderDashboard();
+      showToast(team.captain ? `⭐ ${playerName} dijadikan Kapten ${team.name}` : `Kapten ${team.name} dihapus`, "success");
+    };
 
     // ── Inline edit player name ────────────────────────────
     window.startEditPlayer = (teamId, idx) => {
@@ -293,6 +315,7 @@
       const saveEdit = async () => {
         const newName = input.value.trim();
         if (newName && newName !== currentName) {
+          if (team.captain === currentName) team.captain = newName;
           team.players[idx] = newName;
           await saveData(data);
           showToast("✓ Nama diperbarui", "success");
@@ -310,6 +333,8 @@
     window.deletePlayer = async (teamId, idx) => {
       const team = data.teams.find(t=>t.id===teamId);
       if (!team) return;
+      const deletedPlayer = team.players[idx];
+      if (team.captain === deletedPlayer) team.captain = null;
       team.players.splice(idx,1);
       await saveData(data);
       renderTeamsAdmin();

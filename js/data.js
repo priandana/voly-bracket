@@ -13,27 +13,33 @@ const DEFAULT_DATA = {
   teams: [
     {
       id: "team1", name: "BANDUNG 1", shortName: "BDG1", color: "#f59e0b",
-      players: ["Agus Ridwan","Rijal Faisal Sani","Muhammad Devin Pratama","Deli Martin","Ully Nope","Napan Suparlan","Ucep Pasbar","Rully Ferdian","Asep Ramdhan","Asep Shaepudin","Soni Firmansyah"]
+      captain: "Muhammad Devin Pratama",
+      players: ["Agus Ridwan","Rijal Faisal Sani","Muhammad Devin Pratama","Deli Martin","Diky","Ully Nopa","Nopan Suparlan","Usep Pasbar","Rully Ferdian","Asep Ramdhan","Asep SAepudin","Soni Hmansyah"]
     },
     {
       id: "team2", name: "BANDUNG 2", shortName: "BDG2", color: "#3b82f6",
-      players: ["Irfan","Sendi","Budhi","Deni","Roy","Jeka","Andi","Agung","Sahid","Superman","Yana","Adam"]
+      captain: "Sahid",
+      players: ["Erfan","Sendi","Budi m","Deni","Roy","Jaka","Andi","Agung","Sahid","Suparman","Yana","Adam"]
     },
     {
       id: "team3", name: "TRANSPORT PADALARANG", shortName: "TRNS", color: "#10b981",
-      players: ["Ucok Johanes S","Ahmad Rian","Ricky","M Fauzan","Abdul Halim","Eka Widiawiyah","Iwan Hermawan","Indra Ismana","Aldi"]
+      captain: "RICKY",
+      players: ["ucok johanes s","ahmad rian","RICKY","m fauzan","abdul halim","eka widiansyah","iwan hermawan","indra lesmana","aldi"]
     },
     {
       id: "team4", name: "WHAREHOUSE 4", shortName: "WH4", color: "#8b5cf6",
-      players: ["Denada","Suherman","Cahaya Mukti","Firdaus","Priandana Mangroja Lubis","Asep M Firman","Fijak Restu","Rian","Heikal","Sandy Maulana","Cun Cun"]
+      captain: "Sandy Maulana",
+      players: ["Denada","Suherman","CAHAYA MUKTI","firdaus","Priandana mangraja lubis","Asep m firman","FUAR RESTU","rian","haikal","Sandy Maulana","cun cun"]
     },
     {
       id: "team5", name: "WHAREHOUSE 5", shortName: "WH5", color: "#ef4444",
-      players: ["Ceptiana Hidayat","Bagus Maulana Yusup","Sambas","Iwan","Gugun Gunawan","Ahmad Sesa Kumara","Muhammad Revy Farizqy","Muhammad Zaenal Mutaqin","PRO Sutanto","M Jayani"]
+      captain: "Bagus maulana yusup",
+      players: ["Ceptiana hidayat","Bagus maulana yusup","Samba s","iwan","Gugun Gunawan","Ahmad Sasa Komara","Muhammad Revy Farizqy","Muhammad Zaenal Mutaqin","Adam Julianto","EKO SUTANTO","M jayan"]
     },
     {
       id: "team6", name: "WHAREHOUSE 6", shortName: "WH6", color: "#f97316",
-      players: ["Anan Koswara","Acep","Kisro","Irwin","Roby","Recliana Inransyah","Rusman","Momo Asep Suhendar","Januar","Muhamad Abdul Azis","Muhammad Revy Farizqy"]
+      captain: "ANAN KOSWARA",
+      players: ["ANAN KOSWARA","ACEP","Kisro","Erwin","Roby","Rediana Irwansyah","RUSMAN","MOMO ASEP SUHENDAR","Januar","Muhamad Abdul Azis","Muhammad Revy Farizqy"]
     }
   ],
   matches: [

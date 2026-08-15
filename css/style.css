@@ -626,6 +626,31 @@ p, span, li { line-height: 1.6; }
   font-weight: 600;
 }
 
+.player-item.is-captain {
+  background: linear-gradient(90deg, rgba(212,168,67,0.14), transparent);
+  border-radius: 6px;
+  padding: 6px 8px;
+  border: 1px solid rgba(212,168,67,0.25);
+  margin: 2px 0;
+}
+
+.player-captain-tag {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--gold);
+  background: rgba(212,168,67,0.15);
+  border: 1px solid rgba(212,168,67,0.35);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 0 10px rgba(212,168,67,0.2);
+}
+
 /* ============================================================
    SCHEDULE TABLE
    ============================================================ */
