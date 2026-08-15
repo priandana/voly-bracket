@@ -168,17 +168,50 @@ async function initDB() {
   const connected = FB.init();
   if (connected) {
     // Fetch from Firebase
-    const remote = await FB.readOnce();
+    let remote = await FB.readOnce();
     if (remote) {
+      // Auto-sync official captains & rosters if missing in Firebase
+      let updated = false;
+      DEFAULT_DATA.teams.forEach(defTeam => {
+        const target = (remote.teams || []).find(t => t.id === defTeam.id);
+        if (target) {
+          if (!target.captain && defTeam.captain) {
+            target.captain = defTeam.captain;
+            updated = true;
+          }
+          // Update players if still on old default roster
+          if (JSON.stringify(target.players).includes("Ully Nope") || target.players.length !== defTeam.players.length) {
+            target.players = defTeam.players;
+            target.captain = defTeam.captain;
+            updated = true;
+          }
+        }
+      });
+
+      if (updated) {
+        await FB.write(remote);
+      }
+
       _memCache = remote;
       saveLocalData(remote); // keep local copy as offline cache
     } else {
       // First time: push default data to Firebase
-      _memCache = loadLocalData();
+      _memCache = getDefault();
       await FB.write(_memCache);
+      saveLocalData(_memCache);
     }
   } else {
     _memCache = loadLocalData();
+    let updated = false;
+    DEFAULT_DATA.teams.forEach(defTeam => {
+      const target = (_memCache.teams || []).find(t => t.id === defTeam.id);
+      if (target && !target.captain && defTeam.captain) {
+        target.captain = defTeam.captain;
+        target.players = defTeam.players;
+        updated = true;
+      }
+    });
+    if (updated) saveLocalData(_memCache);
   }
   return _memCache;
 }
