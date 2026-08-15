@@ -20,6 +20,19 @@
 <body>
 
 <!-- ═══════════════════════════════════════════════
+     ADMIN MODE BANNER (Shown if admin logged in)
+════════════════════════════════════════════════ -->
+<div id="admin-mode-banner" class="admin-mode-banner" style="display:none;">
+  <div class="admin-mode-inner">
+    <span>👑 <strong>Mode Admin Aktif</strong> — Klik kartu pertandingan di bagan/bracket untuk pilih pemenang & skor langsung!</span>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <a href="admin.html" class="btn btn-sm btn-primary">⚙️ Panel Admin</a>
+      <button id="btn-admin-logout" class="btn btn-sm btn-danger">Keluar Mode Admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
      HEADER
 ════════════════════════════════════════════════ -->
 <header class="site-header">
