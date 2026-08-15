@@ -302,12 +302,9 @@ p, span, li { line-height: 1.6; }
 .bracket-wrap:active { cursor: grabbing; }
 
 .bracket-canvas {
-  display: flex;
-  gap: 0;
-  align-items: stretch;
-  min-width: max-content;
-  padding: 20px 40px;
   position: relative;
+  padding: 20px 40px;
+  /* width & height set dynamically by bracket.js */
 }
 
 /* ── Round Column ── */
