@@ -104,6 +104,17 @@
 
   <!-- ── PANEL: BRACKET ── -->
   <div class="tab-panel active" id="panel-bracket" role="tabpanel">
+
+    <!-- Mobile Round Switcher -->
+    <div class="mobile-bracket-nav" id="mobile-bracket-nav">
+      <div class="mobile-nav-pills">
+        <button type="button" class="round-pill active" data-round-pill="0" onclick="scrollToRound(0)">⚡ Quarter Final</button>
+        <button type="button" class="round-pill" data-round-pill="1" onclick="scrollToRound(1)">🔥 Semi Final</button>
+        <button type="button" class="round-pill" data-round-pill="2" onclick="scrollToRound(2)">🏆 Final</button>
+      </div>
+      <div class="mobile-swipe-hint">👉 Geser bagan ke kanan untuk babak selanjutnya</div>
+    </div>
+
     <div class="bracket-wrap" id="bracket-wrap" aria-label="Bagan pertandingan">
       <div class="bracket-canvas" id="bracket-canvas">
         <!-- Rendered by bracket.js -->

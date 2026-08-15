@@ -665,7 +665,7 @@
     document.body.style.overflow = "";
   }
 
-  // ── Drag scroll ────────────────────────────────────────────
+  // ── Drag scroll & Mobile Round Nav ─────────────────────────
   function setupDrag() {
     const wrap = document.querySelector(".bracket-wrap");
     if (!wrap) return;
@@ -673,7 +673,28 @@
     wrap.addEventListener("mousedown", e => { down=true; startX=e.pageX-wrap.offsetLeft; sl=wrap.scrollLeft; wrap.style.cursor="grabbing"; });
     document.addEventListener("mouseup", () => { down=false; if(wrap) wrap.style.cursor="grab"; });
     wrap.addEventListener("mousemove", e => { if(!down) return; e.preventDefault(); wrap.scrollLeft=sl-(e.pageX-wrap.offsetLeft-startX); });
+
+    // Sync mobile round pills on scroll
+    wrap.addEventListener("scroll", () => {
+      const scrollPos = wrap.scrollLeft;
+      const roundIdx = Math.min(2, Math.max(0, Math.round(scrollPos / (CARD_W + COL_GAP))));
+      document.querySelectorAll("[data-round-pill]").forEach((pill, idx) => {
+        if (idx === roundIdx) pill.classList.add("active");
+        else pill.classList.remove("active");
+      });
+    }, { passive: true });
   }
+
+  window.scrollToRound = function(roundIdx) {
+    const wrap = document.querySelector(".bracket-wrap");
+    if (!wrap) return;
+    const targetX = colX(roundIdx);
+    wrap.scrollTo({ left: targetX, behavior: "smooth" });
+    document.querySelectorAll("[data-round-pill]").forEach((pill, idx) => {
+      if (idx === roundIdx) pill.classList.add("active");
+      else pill.classList.remove("active");
+    });
+  };
 
   document.addEventListener("DOMContentLoaded", init);
 })();
