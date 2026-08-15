@@ -1,0 +1,913 @@
+/* ============================================================
+   VOLY TOURNAMENT — MAIN STYLES
+   Premium dark theme bracket website
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:        #d4a843;
+  --gold-light:  #f0c060;
+  --gold-dark:   #a07830;
+  --navy:        #0a0e1a;
+  --navy-mid:    #0f1628;
+  --navy-card:   #141d35;
+  --navy-border: #1e2d50;
+  --navy-hover:  #1a2540;
+  --blue-accent: #2563eb;
+  --green:       #22c55e;
+  --red:         #ef4444;
+  --text-primary:#f0f4ff;
+  --text-secondary:#8fa3cc;
+  --text-muted:  #4a5d80;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 20px rgba(212,168,67,0.15);
+  --transition:  0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--navy);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--navy-mid); }
+::-webkit-scrollbar-thumb { background: var(--navy-border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+
+/* ── Typography ── */
+h1,h2,h3,h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; line-height: 1.1; }
+p, span, li { line-height: 1.6; }
+
+/* ── Utility ── */
+.gold { color: var(--gold); }
+.sr-only { position: absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.gap-2 { gap: 0.5rem; }
+
+/* ============================================================
+   HEADER / NAV
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,14,26,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--navy-border);
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--navy);
+  flex-shrink: 0;
+  box-shadow: 0 2px 12px rgba(212,168,67,0.3);
+}
+
+.logo-text { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.06em; }
+.logo-name { font-size: 1.25rem; color: var(--text-primary); display: block; }
+.logo-sub  { font-size: 0.65rem; color: var(--gold); display: block; margin-top: -4px; letter-spacing: 0.12em; font-family: 'Rajdhani', sans-serif; font-weight: 600; text-transform: uppercase; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+}
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--transition);
+  letter-spacing: 0.02em;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text-primary);
+  background: var(--navy-hover);
+}
+
+.nav-links a.active { color: var(--gold); }
+
+.nav-admin-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--navy) !important;
+  border-radius: var(--radius-sm);
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: all var(--transition);
+  box-shadow: 0 2px 12px rgba(212,168,67,0.25);
+}
+
+.nav-admin-btn:hover {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(212,168,67,0.4) !important;
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+.hero {
+  position: relative;
+  padding: 80px 2rem 60px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,168,67,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 100%, rgba(37,99,235,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: rgba(212,168,67,0.1);
+  border: 1px solid rgba(212,168,67,0.25);
+  border-radius: 99px;
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero h1 {
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.hero h1 span { color: var(--gold); }
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.hero-meta-item .icon { font-size: 1rem; }
+.hero-meta-item strong { color: var(--text-primary); font-weight: 600; }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs-bar {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--navy-border);
+}
+
+.tab-btn {
+  padding: 14px 22px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition);
+  margin-bottom: -1px;
+}
+
+.tab-btn:hover { color: var(--text-primary); }
+
+.tab-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ============================================================
+   BRACKET CONTAINER
+   ============================================================ */
+.bracket-wrap {
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 2rem 0;
+  cursor: grab;
+}
+.bracket-wrap:active { cursor: grabbing; }
+
+.bracket-canvas {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+  min-width: max-content;
+  padding: 20px 40px;
+  position: relative;
+}
+
+/* ── Round Column ── */
+.round-col {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.round-header {
+  text-align: center;
+  padding: 0 20px 20px;
+}
+
+.round-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.round-label.final-label { color: var(--gold); }
+
+.round-matches {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 1;
+  gap: 0;
+  position: relative;
+}
+
+/* ── Match Card ── */
+.match-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.match-card {
+  width: 230px;
+  background: var(--navy-card);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all var(--transition);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.match-card:hover {
+  border-color: rgba(212,168,67,0.4);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+.match-card.final-card {
+  width: 250px;
+  border-color: rgba(212,168,67,0.3);
+  background: linear-gradient(180deg, rgba(212,168,67,0.05) 0%, var(--navy-card) 100%);
+}
+
+.match-card.final-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 8px 40px rgba(212,168,67,0.25);
+}
+
+.match-meta {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--navy-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.match-id {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.match-datetime {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.match-datetime .time { color: var(--gold); font-weight: 600; font-family: 'Rajdhani', sans-serif; }
+
+.team-row {
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--transition);
+  position: relative;
+}
+
+.team-row:first-of-type { border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+.team-row.winner { background: rgba(212,168,67,0.08); }
+.team-row.loser  { opacity: 0.5; }
+
+.team-seed {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--navy-mid);
+  display: grid;
+  place-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.team-color-bar {
+  width: 3px;
+  height: 24px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.team-name {
+  flex: 1;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.team-name.tbd { color: var(--text-muted); font-style: italic; font-weight: 400; }
+.team-name.bye { color: var(--text-muted); }
+
+.team-score {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-family: 'Rajdhani', sans-serif;
+  min-width: 20px;
+  text-align: right;
+}
+
+.team-row.winner .team-score { color: var(--gold); }
+
+.winner-crown {
+  position: absolute;
+  right: 8px;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.team-row.winner .winner-crown { opacity: 1; }
+
+/* ── Bracket Connectors (SVG) ── */
+.connector-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   CHAMPION DISPLAY
+   ============================================================ */
+.champion-section {
+  text-align: center;
+  padding: 24px 20px;
+}
+
+.champion-trophy {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 4px 12px rgba(212,168,67,0.5));
+}
+
+.champion-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.8rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  margin-bottom: 6px;
+}
+
+.champion-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  color: var(--text-primary);
+}
+
+.champion-tbd {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ============================================================
+   TEAMS ROSTER SECTION
+   ============================================================ */
+.section-title {
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.team-card {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.team-card:hover {
+  border-color: rgba(255,255,255,0.1);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.team-card-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--navy-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.team-card-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+}
+
+.team-card-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: 0.05em;
+}
+
+.team-card-info { flex: 1; min-width: 0; }
+.team-card-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.team-card-count {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.team-card-body { padding: 14px 20px; }
+
+.player-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+.player-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: color var(--transition);
+}
+
+.player-item:last-child { border-bottom: none; }
+.player-item:hover { color: var(--text-primary); }
+
+.player-num {
+  width: 18px;
+  text-align: right;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+}
+
+/* ============================================================
+   SCHEDULE TABLE
+   ============================================================ */
+.schedule-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--navy-border);
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.schedule-table thead tr {
+  background: var(--navy-hover);
+}
+
+.schedule-table th {
+  padding: 14px 20px;
+  text-align: left;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--navy-border);
+}
+
+.schedule-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+
+.schedule-table tbody tr { transition: background var(--transition); }
+.schedule-table tbody tr:hover { background: var(--navy-hover); }
+.schedule-table tbody tr:last-child td { border-bottom: none; }
+
+.match-teams-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.vs-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.status-badge.done     { background: rgba(34,197,94,0.1);  color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+.status-badge.live     { background: rgba(239,68,68,0.1);   color: var(--red);   border: 1px solid rgba(239,68,68,0.2); }
+.status-badge.upcoming { background: rgba(212,168,67,0.1);  color: var(--gold);  border: 1px solid rgba(212,168,67,0.2); }
+.status-badge.tbd      { background: rgba(255,255,255,0.05);color: var(--text-muted); border: 1px solid rgba(255,255,255,0.08); }
+
+/* ============================================================
+   MATCH MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-box {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  transform: scale(0.95) translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+}
+
+.modal-overlay.open .modal-box {
+  transform: scale(1) translateY(0);
+}
+
+.modal-head {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--navy-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title { font-size: 1.1rem; color: var(--gold); }
+.modal-close-btn {
+  width: 32px; height: 32px;
+  border: none;
+  background: var(--navy-hover);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  transition: all var(--transition);
+}
+.modal-close-btn:hover { background: rgba(239,68,68,0.15); color: var(--red); }
+
+.modal-body { padding: 24px; }
+
+.modal-matchup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modal-team {
+  flex: 1;
+  text-align: center;
+}
+
+.modal-team-avatar {
+  width: 56px; height: 56px;
+  border-radius: var(--radius-md);
+  margin: 0 auto 8px;
+  display: grid;
+  place-items: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.modal-team-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.modal-vs {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+.modal-score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.score-display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  min-width: 60px;
+  text-align: center;
+}
+
+.score-separator { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--text-muted); }
+
+.modal-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modal-info-item {
+  background: var(--navy-mid);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.modal-info-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; font-family: 'Rajdhani', sans-serif; }
+.modal-info-value { font-size: 0.88rem; color: var(--text-primary); font-weight: 600; }
+
+.modal-winner-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(212,168,67,0.1);
+  border: 1px solid rgba(212,168,67,0.25);
+  border-radius: var(--radius-sm);
+  margin-top: 16px;
+}
+
+.modal-winner-badge .label { font-size: 0.7rem; color: var(--gold); font-weight: 700; letter-spacing: 0.08em; font-family: 'Rajdhani', sans-serif; }
+.modal-winner-badge .value { font-size: 0.9rem; color: var(--text-primary); font-weight: 700; font-family: 'Rajdhani', sans-serif; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  border-top: 1px solid var(--navy-border);
+  padding: 24px 2rem;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+.footer-copy span { color: var(--gold); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .header-inner { padding: 0 1rem; }
+  .nav-links { gap: 0; }
+  .nav-links a { padding: 6px 10px; font-size: 0.8rem; }
+  .hero { padding: 60px 1rem 40px; }
+  .hero-meta { gap: 1rem; }
+  .tabs-bar, .main-content { padding-left: 1rem; padding-right: 1rem; }
+  .teams-grid { grid-template-columns: 1fr; }
+  .modal-matchup { flex-direction: column; gap: 8px; }
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.animate-stagger > * {
+  opacity: 0;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.animate-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.animate-stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.animate-stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.animate-stagger > *:nth-child(4) { animation-delay: 0.20s; }
+.animate-stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.animate-stagger > *:nth-child(6) { animation-delay: 0.30s; }

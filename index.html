@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bagan Pertandingan Volly</title>
+  <meta name="description" content="Bagan pertandingan voli Padalarang Open Tournament 2026 — lihat jadwal, bracket, dan roster tim.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .spinner{width:32px;height:32px;border:3px solid var(--navy-border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes slideUp{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+    .connection-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;font-size:.72rem;font-weight:700;letter-spacing:.06em;font-family:'Rajdhani',sans-serif;border:1px solid;}
+    .connection-badge.live{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.25);color:#22c55e;}
+    .connection-badge.offline{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08);color:var(--text-muted);}
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-wrap">
+      <div class="logo-icon">V</div>
+      <div class="logo-text">
+        <span class="logo-name">VOLY BRACKET</span>
+        <span class="logo-sub">Tournament Manager</span>
+      </div>
+    </a>
+
+    <nav aria-label="Navigasi utama">
+      <ul class="nav-links">
+        <li><a href="#bracket" class="active" data-tab="bracket" onclick="switchTab(event,'bracket')">🏐 Bracket</a></li>
+        <li><a href="#teams" data-tab="teams" onclick="switchTab(event,'teams')">👥 Tim</a></li>
+        <li><a href="#schedule" data-tab="schedule" onclick="switchTab(event,'schedule')">📅 Jadwal</a></li>
+        <li><a href="admin.html" class="nav-admin-btn">⚙️ Admin</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    <span>Live Tournament</span>
+  </div>
+
+  <h1 id="tournament-name">BAGAN PERTANDINGAN <span>VOLLY</span></h1>
+  <p class="hero-subtitle" id="tournament-subtitle">Padalarang Open Tournament 2026</p>
+
+  <div style="margin-bottom:1rem">
+    <span class="connection-badge offline" id="connection-badge">⬤ Menghubungkan...</span>
+  </div>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="icon">📍</span>
+      <span id="hero-location"><strong>GOR Padalarang, Bandung Barat</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="icon">📅</span>
+      <span><strong id="hero-date">18 - 20 Agustus 2026</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="icon">🏆</span>
+      <span><strong>6 Tim Peserta</strong></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     TABS
+════════════════════════════════════════════════ -->
+<div class="tabs-bar" role="tablist">
+  <button class="tab-btn active" role="tab" data-tab="bracket" id="tab-bracket" onclick="switchTab(event,'bracket')">🏐 Bracket</button>
+  <button class="tab-btn" role="tab" data-tab="teams" id="tab-teams" onclick="switchTab(event,'teams')">👥 Tim & Pemain</button>
+  <button class="tab-btn" role="tab" data-tab="schedule" id="tab-schedule" onclick="switchTab(event,'schedule')">📅 Jadwal Pertandingan</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════ -->
+<main class="main-content">
+
+  <!-- ── PANEL: BRACKET ── -->
+  <div class="tab-panel active" id="panel-bracket" role="tabpanel">
+    <div class="bracket-wrap" id="bracket-wrap" aria-label="Bagan pertandingan">
+      <div class="bracket-canvas" id="bracket-canvas">
+        <!-- Rendered by bracket.js -->
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1.5rem;padding:16px 20px;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius-md);">
+      <div style="display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-muted);">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--gold)"></div> Pemenang / Maju
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-muted);">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--text-muted);opacity:.4"></div> Kalah / Gugur
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-muted);">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--navy-border)"></div> TBD / Belum ditentukan
+      </div>
+      <div style="margin-left:auto;font-size:.78rem;color:var(--text-muted);">← Geser untuk melihat seluruh bracket →</div>
+    </div>
+  </div>
+
+  <!-- ── PANEL: TEAMS ── -->
+  <div class="tab-panel" id="panel-teams" role="tabpanel">
+    <h2 class="section-title">Tim & Pemain</h2>
+    <p class="section-subtitle">Daftar tim dan seluruh pemain yang berpartisipasi dalam tournament ini.</p>
+    <div class="teams-grid animate-stagger" id="teams-grid">
+      <!-- Rendered by bracket.js -->
+    </div>
+  </div>
+
+  <!-- ── PANEL: SCHEDULE ── -->
+  <div class="tab-panel" id="panel-schedule" role="tabpanel">
+    <h2 class="section-title">Jadwal Pertandingan</h2>
+    <p class="section-subtitle">Seluruh pertandingan dari babak penyisihan hingga final.</p>
+    <div class="schedule-table-wrap">
+      <table class="schedule-table" aria-label="Jadwal pertandingan">
+        <thead>
+          <tr>
+            <th>Babak</th>
+            <th>Pertandingan</th>
+            <th>Tanggal</th>
+            <th>Jam</th>
+            <th>Skor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="schedule-body">
+          <!-- Rendered by bracket.js -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════
+     MATCH MODAL
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="match-modal" role="dialog" aria-modal="true" aria-labelledby="modal-match-title">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 class="modal-title" id="modal-match-title">Detail Pertandingan</h2>
+      <button class="modal-close-btn" aria-label="Tutup modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Rendered by bracket.js -->
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copy">© 2026 <span>Voly Tournament</span> · Padalarang Open</p>
+    <p class="footer-copy" style="font-size:.72rem;">Klik kartu pertandingan untuk melihat detail</p>
+  </div>
+</footer>
+
+<script>
+  // Inline tab switcher (before bracket.js loads)
+  function switchTab(e, tab) {
+    e && e.preventDefault();
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", p.id === "panel-" + tab));
+    document.querySelectorAll(".nav-links a[data-tab]").forEach(a => a.classList.toggle("active", a.dataset.tab === tab));
+  }
+</script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- Voly scripts -->
+<script src="js/firebase-config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/bracket.js"></script>
+</body>
+</html>

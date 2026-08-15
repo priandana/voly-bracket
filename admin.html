@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Voly Bracket</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/admin.css">
+  <style>
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+    .dot-green{animation:pulse 2s infinite}
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     LOGIN SCREEN
+════════════════════════════════════════════════ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">V</div>
+      <h1>ADMIN PANEL</h1>
+      <p>VOLY BRACKET TOURNAMENT</p>
+    </div>
+
+    <form class="login-form" id="login-form" autocomplete="off">
+      <div class="form-group">
+        <label class="form-label" for="admin-password">Password Admin</label>
+        <input type="password" class="form-input" id="admin-password" placeholder="Masukkan password..." autocomplete="current-password" required>
+      </div>
+      <div class="login-error" id="login-error"></div>
+      <button type="submit" class="login-btn">MASUK →</button>
+    </form>
+
+    <p class="login-hint">Password default: <code style="color:var(--gold);background:rgba(212,168,67,.08);padding:1px 6px;border-radius:4px;font-size:.75rem;">voly2026</code></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     ADMIN LAYOUT (hidden until login)
+════════════════════════════════════════════════ -->
+<div class="admin-layout" id="admin-layout" style="display:none">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">V</div>
+      <div>
+        <div class="sidebar-brand-name">VOLY BRACKET</div>
+        <span class="sidebar-brand-sub">ADMIN PANEL</span>
+      </div>
+    </div>
+
+      <div style="padding:12px 20px;border-bottom:1px solid var(--navy-border);">
+        <div id="fb-status" style="font-size:.72rem;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.08em;display:flex;align-items:center;gap:6px;color:var(--text-muted);">⬤ Menghubungkan...</div>
+      </div>
+
+    <nav class="sidebar-nav" aria-label="Menu admin">
+      <div class="sidebar-section-label">Menu</div>
+      <button class="sidebar-link active" data-section="dashboard">
+        <span class="sidebar-link-icon">📊</span> Dashboard
+      </button>
+      <button class="sidebar-link" data-section="bracket">
+        <span class="sidebar-link-icon">🏐</span> Edit Bracket
+      </button>
+      <button class="sidebar-link" data-section="teams">
+        <span class="sidebar-link-icon">👥</span> Tim & Pemain
+      </button>
+
+      <div class="sidebar-section-label" style="margin-top:8px">Tournament</div>
+      <button class="sidebar-link" data-section="settings">
+        <span class="sidebar-link-icon">⚙️</span> Pengaturan
+      </button>
+      <a href="index.html" class="sidebar-link" target="_blank" style="text-decoration:none">
+        <span class="sidebar-link-icon">🌐</span> Lihat Publik
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" id="logout-btn">
+        <span>🚪</span> Keluar
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-actions">
+        <a href="index.html" target="_blank" class="view-public-btn">🌐 Lihat Halaman Publik</a>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="admin-content">
+
+      <!-- ══ SECTION: DASHBOARD ══ -->
+      <section class="admin-section active" id="section-dashboard">
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="stat-teams">—</div>
+            <div class="stat-label">Total Tim</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏃</div>
+            <div class="stat-value" id="stat-players">—</div>
+            <div class="stat-label">Total Pemain</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⚔️</div>
+            <div class="stat-value" id="stat-matches">—</div>
+            <div class="stat-label">Total Match</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="stat-done">—</div>
+            <div class="stat-label">Match Selesai</div>
+          </div>
+        </div>
+
+        <!-- Recent matches -->
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <span class="admin-card-title">Daftar Pertandingan</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Babak</th>
+                  <th>Tim 1</th>
+                  <th></th>
+                  <th>Tim 2</th>
+                  <th>Skor</th>
+                  <th>Hasil</th>
+                </tr>
+              </thead>
+              <tbody id="recent-matches"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══ SECTION: BRACKET / MATCHES ══ -->
+      <section class="admin-section" id="section-bracket">
+
+        <div class="section-head">
+          <h2>Edit Bracket & Pertandingan</h2>
+          <button class="btn btn-primary" id="save-matches-btn">💾 Simpan Semua</button>
+        </div>
+
+        <div style="background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:20px;font-size:.82rem;color:var(--gold);">
+          💡 Perbarui skor & pemenang setiap pertandingan. Pemenang akan otomatis maju ke babak berikutnya.
+        </div>
+
+        <div class="match-editor-list" id="matches-editor">
+          <!-- Rendered by admin.js -->
+        </div>
+
+      </section>
+
+      <!-- ══ SECTION: TEAMS ══ -->
+      <section class="admin-section" id="section-teams">
+
+        <div class="section-head">
+          <h2>Tim & Pemain</h2>
+          <button class="btn btn-primary" id="add-team-btn">➕ Tambah Tim</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px" id="teams-admin-grid">
+          <!-- Rendered by admin.js -->
+        </div>
+
+      </section>
+
+      <!-- ══ SECTION: SETTINGS ══ -->
+      <section class="admin-section" id="section-settings">
+
+        <div class="section-head">
+          <h2>Pengaturan Tournament</h2>
+        </div>
+
+        <div class="admin-card" style="max-width:600px">
+          <div class="admin-card-head">
+            <span class="admin-card-title">Informasi Tournament</span>
+          </div>
+          <div class="admin-card-body">
+
+            <div class="field-group">
+              <label class="field-label" for="set-name">Nama Tournament</label>
+              <input type="text" class="field-input" id="set-name" placeholder="Nama tournament...">
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="set-subtitle">Subtitle / Deskripsi</label>
+              <input type="text" class="field-input" id="set-subtitle" placeholder="Subtitle...">
+            </div>
+
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label" for="set-location">Lokasi</label>
+                <input type="text" class="field-input" id="set-location" placeholder="Lokasi...">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="set-date">Tanggal</label>
+                <input type="text" class="field-input" id="set-date" placeholder="18 - 20 Agustus 2026">
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="set-status">Status Tournament</label>
+              <select class="field-select" id="set-status">
+                <option value="upcoming">🔜 Akan Datang</option>
+                <option value="ongoing">🔴 Sedang Berlangsung</option>
+                <option value="finished">✅ Selesai</option>
+              </select>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
+              <button class="btn btn-primary" id="save-settings-btn">💾 Simpan Pengaturan</button>
+              <button class="btn btn-danger" id="reset-data-btn">🔄 Reset Data</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Change Password info -->
+        <div class="admin-card" style="max-width:600px;margin-top:20px;">
+          <div class="admin-card-head">
+            <span class="admin-card-title">🔐 Password Admin</span>
+          </div>
+          <div class="admin-card-body">
+            <p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:12px;">
+              Password admin saat ini tersimpan di file <code style="color:var(--gold);background:rgba(212,168,67,.08);padding:1px 6px;border-radius:4px">js/admin.js</code>.
+              Cari baris <code style="color:var(--gold);background:rgba(212,168,67,.08);padding:1px 6px;border-radius:4px">const ADMIN_PASSWORD</code> untuk menggantinya.
+            </p>
+            <div style="padding:10px 14px;background:var(--navy-mid);border-radius:var(--radius-sm);font-size:.8rem;color:var(--text-muted);font-family:monospace;">
+              const ADMIN_PASSWORD = "voly2026";
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /admin-content -->
+  </div><!-- /admin-main -->
+</div><!-- /admin-layout -->
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: EDIT TIM
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="team-modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 class="modal-title">Edit Tim</h2>
+      <button class="modal-close-btn" aria-label="Tutup">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label" for="edit-team-name">Nama Tim</label>
+        <input type="text" class="field-input" id="edit-team-name" placeholder="Nama tim...">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="edit-team-short">Singkatan (maks 4 karakter)</label>
+        <input type="text" class="field-input" id="edit-team-short" maxlength="4" placeholder="BDG1">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Warna Tim</label>
+        <div class="color-picker-wrap" id="team-color-picker"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" id="team-modal-cancel">Batal</button>
+      <button class="btn btn-primary" id="team-modal-save">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL: TAMBAH TIM BARU
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="add-team-modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 class="modal-title">➕ Tambah Tim Baru</h2>
+      <button class="modal-close-btn" aria-label="Tutup">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label" for="new-team-name">Nama Tim *</label>
+        <input type="text" class="field-input" id="new-team-name" placeholder="Contoh: BANDUNG 3">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="new-team-short">Singkatan</label>
+        <input type="text" class="field-input" id="new-team-short" maxlength="4" placeholder="BDG3">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" id="add-team-cancel">Batal</button>
+      <button class="btn btn-primary" id="add-team-save">✅ Tambah Tim</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- Voly scripts -->
+<script src="js/firebase-config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
