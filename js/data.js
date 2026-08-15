@@ -43,12 +43,12 @@ const DEFAULT_DATA = {
     }
   ],
   matches: [
-    { id:"m1", round:1, roundName:"Quarter Final", position:1, team1:"team1", team2:null,    score1:null, score2:null, winner:"team1", date:"19 Agustus 2026", time:"17:00", nextMatch:"m5", nextSlot:1 },
-    { id:"m2", round:1, roundName:"Quarter Final", position:2, team1:"team2", team2:"team3", score1:null, score2:null, winner:null,    date:"18 Agustus 2026", time:"17:00", nextMatch:"m5", nextSlot:2 },
-    { id:"m3", round:1, roundName:"Quarter Final", position:3, team1:"team4", team2:"team5", score1:null, score2:null, winner:null,    date:"18 Agustus 2026", time:"17:40", nextMatch:"m6", nextSlot:1 },
-    { id:"m4", round:1, roundName:"Quarter Final", position:4, team1:"team6", team2:null,    score1:null, score2:null, winner:"team6", date:"19 Agustus 2026", time:"17:40", nextMatch:"m6", nextSlot:2 },
-    { id:"m5", round:2, roundName:"Semi Final",    position:1, team1:null,    team2:null,    score1:null, score2:null, winner:null,    date:"19 Agustus 2026", time:"17:40", nextMatch:"m7", nextSlot:1 },
-    { id:"m6", round:2, roundName:"Semi Final",    position:2, team1:null,    team2:null,    score1:null, score2:null, winner:null,    date:"19 Agustus 2026", time:"17:00", nextMatch:"m7", nextSlot:2 },
+    { id:"m1", round:1, roundName:"Quarter Final", position:1, team1:"team2", team2:null,    score1:null, score2:null, winner:"team2", date:"19 Agustus 2026", time:"17:00", nextMatch:"m5", nextSlot:1 },
+    { id:"m2", round:1, roundName:"Quarter Final", position:2, team1:"team5", team2:"team4", score1:null, score2:null, winner:null,    date:"18 Agustus 2026", time:"17:00", nextMatch:"m5", nextSlot:2 },
+    { id:"m3", round:1, roundName:"Quarter Final", position:3, team1:"team6", team2:"team1", score1:null, score2:null, winner:null,    date:"18 Agustus 2026", time:"17:40", nextMatch:"m6", nextSlot:1 },
+    { id:"m4", round:1, roundName:"Quarter Final", position:4, team1:"team3", team2:null,    score1:null, score2:null, winner:"team3", date:"19 Agustus 2026", time:"17:40", nextMatch:"m6", nextSlot:2 },
+    { id:"m5", round:2, roundName:"Semi Final",    position:1, team1:null,    team2:null,    score1:null, score2:null, winner:null,    date:"19 Agustus 2026", time:"17:00", nextMatch:"m7", nextSlot:1 },
+    { id:"m6", round:2, roundName:"Semi Final",    position:2, team1:null,    team2:null,    score1:null, score2:null, winner:null,    date:"19 Agustus 2026", time:"17:40", nextMatch:"m7", nextSlot:2 },
     { id:"m7", round:3, roundName:"Final",         position:1, team1:null,    team2:null,    score1:null, score2:null, winner:null,    date:"20 Agustus 2026", time:"17:00", nextMatch:null, nextSlot:null }
   ]
 };
@@ -64,26 +64,21 @@ const FB = {
 
   // Initialize Firebase connection
   init() {
+    if (typeof firebase === "undefined" || !window.FIREBASE_CONFIG) {
+      console.warn("[Voly] Firebase SDK not loaded, running in offline mode.");
+      this.isConnected = false;
+      return false;
+    }
     try {
-      const config = window.FIREBASE_CONFIG;
-      if (!config || config.apiKey.includes("GANTI")) {
-        console.warn("[Voly] Firebase config belum diisi — pakai localStorage saja.");
-        this.isConnected = false;
-        return false;
+      if (!firebase.apps.length) {
+        firebase.initializeApp(window.FIREBASE_CONFIG);
       }
-
-      // Initialize Firebase app (check if already initialized)
-      if (!firebase.apps || !firebase.apps.length) {
-        firebase.initializeApp(config);
-      }
-
-      this.db  = firebase.database();
+      this.db = firebase.database();
       this.ref = this.db.ref("voly_tournament");
       this.isConnected = true;
-      console.log("[Voly] ✅ Firebase terhubung!");
       return true;
     } catch (err) {
-      console.error("[Voly] Firebase error:", err);
+      console.error("[Voly] Firebase init error:", err);
       this.isConnected = false;
       return false;
     }
@@ -170,8 +165,9 @@ async function initDB() {
     // Fetch from Firebase
     let remote = await FB.readOnce();
     if (remote) {
-      // Auto-sync official captains & rosters if missing in Firebase
       let updated = false;
+
+      // Auto-sync official captains & rosters
       DEFAULT_DATA.teams.forEach(defTeam => {
         const target = (remote.teams || []).find(t => t.id === defTeam.id);
         if (target) {
@@ -179,7 +175,6 @@ async function initDB() {
             target.captain = defTeam.captain;
             updated = true;
           }
-          // Update players if still on old default roster
           if (JSON.stringify(target.players).includes("Ully Nope") || target.players.length !== defTeam.players.length) {
             target.players = defTeam.players;
             target.captain = defTeam.captain;
@@ -188,14 +183,23 @@ async function initDB() {
         }
       });
 
+      // Auto-sync official match bracket pairings if still using old default structure
+      if (remote.matches && remote.matches.length > 0) {
+        const m1 = remote.matches.find(m => m.id === "m1");
+        const m2 = remote.matches.find(m => m.id === "m2");
+        if (m1 && m1.team1 !== "team2" || m2 && m2.team1 !== "team5") {
+          remote.matches = DEFAULT_DATA.matches;
+          updated = true;
+        }
+      }
+
       if (updated) {
         await FB.write(remote);
       }
 
       _memCache = remote;
-      saveLocalData(remote); // keep local copy as offline cache
+      saveLocalData(remote);
     } else {
-      // First time: push default data to Firebase
       _memCache = getDefault();
       await FB.write(_memCache);
       saveLocalData(_memCache);
@@ -211,6 +215,13 @@ async function initDB() {
         updated = true;
       }
     });
+    if (_memCache.matches && _memCache.matches.length > 0) {
+      const m1 = _memCache.matches.find(m => m.id === "m1");
+      if (m1 && m1.team1 !== "team2") {
+        _memCache.matches = DEFAULT_DATA.matches;
+        updated = true;
+      }
+    }
     if (updated) saveLocalData(_memCache);
   }
   return _memCache;
