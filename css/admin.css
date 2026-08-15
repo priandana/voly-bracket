@@ -672,7 +672,44 @@ body {
 
 .player-admin-item:hover { border-color: var(--navy-border); }
 
-.player-admin-name { flex: 1; font-size: 0.84rem; color: var(--text-secondary); }
+.player-admin-name {
+  flex: 1;
+  font-size: .84rem;
+  color: var(--text-secondary);
+  cursor: default;
+}
+
+/* Editable player name */
+.player-editable {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 2px 4px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.player-editable:hover {
+  color: var(--text-primary);
+  background: rgba(212,168,67,0.08);
+}
+
+.edit-hint {
+  font-size: .65rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.player-editable:hover .edit-hint { opacity: 1; }
+
+/* Inline edit input */
+.player-inline-input {
+  flex: 1;
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 3px rgba(212,168,67,0.12) !important;
+}
 
 .player-admin-del {
   width: 24px; height: 24px;

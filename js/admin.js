@@ -250,9 +250,9 @@
         <div class="admin-card-body" style="padding:14px 18px">
           <ul class="player-admin-list">
             ${team.players.map((p,i)=>`
-              <li class="player-admin-item">
-                <span style="font-size:.7rem;color:var(--text-muted);min-width:20px;text-align:right;font-family:'Rajdhani',sans-serif;font-weight:700">${i+1}</span>
-                <span class="player-admin-name">${p}</span>
+              <li class="player-admin-item" id="player-li-${team.id}-${i}">
+                <span style="font-size:.7rem;color:var(--text-muted);min-width:20px;text-align:right;font-family:'Rajdhani',sans-serif;font-weight:700;flex-shrink:0">${i+1}</span>
+                <span class="player-admin-name player-editable" title="Klik untuk edit nama" onclick="startEditPlayer('${team.id}',${i})">${p}<span class="edit-hint">✏️</span></span>
                 <button class="player-admin-del" onclick="deletePlayer('${team.id}',${i})">✕</button>
               </li>`).join("")}
           </ul>
@@ -265,6 +265,45 @@
     });
 
     window.openEditTeam = id => { editingTeamId = id; openTeamModal(id); };
+
+    // ── Inline edit player name ────────────────────────────
+    window.startEditPlayer = (teamId, idx) => {
+      const li = document.getElementById(`player-li-${teamId}-${idx}`);
+      if (!li) return;
+      const nameSpan = li.querySelector(".player-admin-name");
+      if (!nameSpan || li.querySelector(".player-inline-input")) return; // already editing
+
+      const team = data.teams.find(t => t.id === teamId);
+      if (!team) return;
+      const currentName = team.players[idx];
+
+      // Replace span with input
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = currentName;
+      input.className = "player-inline-input field-input";
+      input.style.cssText = "flex:1;padding:4px 8px;font-size:.84rem;height:28px;";
+      nameSpan.replaceWith(input);
+      input.focus();
+      input.select();
+
+      const saveEdit = async () => {
+        const newName = input.value.trim();
+        if (newName && newName !== currentName) {
+          team.players[idx] = newName;
+          await saveData(data);
+          showToast("✓ Nama diperbarui", "success");
+        }
+        renderTeamsAdmin(); // re-render to restore view
+      };
+
+      input.addEventListener("keydown", e => {
+        if (e.key === "Enter") { e.preventDefault(); saveEdit(); }
+        if (e.key === "Escape") renderTeamsAdmin(); // cancel
+      });
+      input.addEventListener("blur", saveEdit);
+    };
+
     window.deletePlayer = async (teamId, idx) => {
       const team = data.teams.find(t=>t.id===teamId);
       if (!team) return;
