@@ -157,26 +157,26 @@
           <span class="tag ${match.winner?'tag-green':'tag-muted'}">${match.winner?'✓ Selesai':'Pending'}</span>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 88px 1fr;gap:12px;align-items:end;margin-bottom:14px;">
+        <div class="match-editor-teams">
           <div>
             <div class="field-label" style="margin-bottom:4px">Tim 1</div>
-            <div style="padding:9px 12px;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius-sm);font-family:'Rajdhani',sans-serif;font-weight:700;color:${t1c};">${t1Name}</div>
+            <div class="match-team-display" style="color:${t1c};">${t1Name}</div>
           </div>
           <div style="text-align:center">
             <div class="field-label" style="margin-bottom:4px">Skor</div>
-            <div style="display:flex;gap:6px;align-items:center;justify-content:center">
+            <div class="score-inputs-wrap">
               <input type="number" class="score-input" min="0" max="99" placeholder="0" value="${match.score1??''}" data-field="score1" data-match="${match.id}">
-              <span style="color:var(--text-muted);font-family:'Bebas Neue',sans-serif;font-size:1.2rem">-</span>
+              <span style="color:var(--text-muted);font-family:'Bebas Neue',sans-serif;font-size:1.1rem">-</span>
               <input type="number" class="score-input" min="0" max="99" placeholder="0" value="${match.score2??''}" data-field="score2" data-match="${match.id}">
             </div>
           </div>
           <div>
             <div class="field-label" style="margin-bottom:4px">Tim 2</div>
-            <div style="padding:9px 12px;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius-sm);font-family:'Rajdhani',sans-serif;font-weight:700;color:${t2c};">${t2Name}</div>
+            <div class="match-team-display" style="color:${t2c};">${t2Name}</div>
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="match-editor-meta">
           <div class="field-group" style="margin:0">
             <label class="field-label">Tanggal</label>
             <input type="text" class="field-input" placeholder="19 Agustus 2026" value="${match.date||''}" data-field="date" data-match="${match.id}">

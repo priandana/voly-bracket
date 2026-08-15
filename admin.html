@@ -91,7 +91,10 @@
 
     <!-- Topbar -->
     <div class="admin-topbar">
-      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Buka menu">☰</button>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+      </div>
       <div class="topbar-actions">
         <a href="index.html" target="_blank" class="view-public-btn">🌐 Lihat Halaman Publik</a>
       </div>
@@ -311,6 +314,9 @@
   </div>
 </div>
 
+<!-- Sidebar Backdrop (mobile) -->
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
 <!-- Toast Container -->
 <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
@@ -321,5 +327,19 @@
 <script src="js/firebase-config.js"></script>
 <script src="js/data.js"></script>
 <script src="js/admin.js"></script>
+<script>
+  // Mobile sidebar toggle
+  const sidebarEl   = document.getElementById('sidebar');
+  const toggleBtn   = document.getElementById('sidebar-toggle');
+  const backdropEl  = document.getElementById('sidebar-backdrop');
+  function openSidebar()  { sidebarEl.classList.add('open'); backdropEl.classList.add('open'); }
+  function closeSidebar() { sidebarEl.classList.remove('open'); backdropEl.classList.remove('open'); }
+  toggleBtn?.addEventListener('click', () => sidebarEl.classList.contains('open') ? closeSidebar() : openSidebar());
+  backdropEl?.addEventListener('click', closeSidebar);
+  // Close sidebar on nav item click (mobile)
+  document.querySelectorAll('.sidebar-link').forEach(l => l.addEventListener('click', () => {
+    if (window.innerWidth <= 768) closeSidebar();
+  }));
+</script>
 </body>
 </html>
