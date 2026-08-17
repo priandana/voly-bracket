@@ -291,227 +291,251 @@ p, span, li { line-height: 1.6; }
 .tab-panel.active { display: block; }
 
 /* ============================================================
-   BRACKET CONTAINER
+   CHALLONGE-STYLE BRACKET CONTAINER & CARDS
    ============================================================ */
 .bracket-wrap {
   overflow-x: auto;
   overflow-y: visible;
-  padding: 2rem 0;
+  padding: 1.5rem 0;
   cursor: grab;
+  user-select: none;
+  background: radial-gradient(circle at 50% 50%, rgba(30,34,42,0.4) 0%, rgba(10,14,26,0) 100%);
 }
 .bracket-wrap:active { cursor: grabbing; }
 
 .bracket-canvas {
   position: relative;
-  padding: 20px 40px;
-  /* width & height set dynamically by bracket.js */
+  margin: 0 auto;
+  padding: 10px 20px;
 }
 
-/* ── Round Column ── */
-.round-col {
-  display: flex;
-  flex-direction: column;
-  position: relative;
+/* ── Challonge Round Header Badges ── */
+.round-header-wrap {
+  pointer-events: none;
 }
 
-.round-header {
-  text-align: center;
-  padding: 0 20px 20px;
-}
-
-.round-label {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.15em;
-  color: var(--text-muted);
+.round-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  background: #202227;
+  border: 1px solid #363a44;
+  border-radius: 4px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #9ba1b0;
   text-transform: uppercase;
 }
 
-.round-label.final-label { color: var(--gold); }
+.round-badge.final-badge {
+  color: var(--gold);
+  border-color: rgba(212,168,67,0.35);
+  background: rgba(212,168,67,0.08);
+}
 
-.round-matches {
+/* ── Challonge Match Card ── */
+.match-card {
+  position: absolute;
+  width: 220px;
+  height: 58px;
+  background: #2d3037;
+  border: 1px solid #3e424c;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  flex: 1;
-  gap: 0;
-  position: relative;
-}
-
-/* ── Match Card ── */
-.match-wrapper {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.match-card {
-  width: 230px;
-  background: var(--navy-card);
-  border: 1px solid var(--navy-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  transition: all var(--transition);
-  box-shadow: var(--shadow-card);
+  overflow: visible;
   cursor: pointer;
-  position: relative;
-  flex-shrink: 0;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  z-index: 2;
 }
 
 .match-card:hover {
-  border-color: rgba(212,168,67,0.4);
-  box-shadow: var(--shadow-card), var(--shadow-glow);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+  border-color: #5865f2;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 10px rgba(88,101,242,0.3);
 }
 
 .match-card.final-card {
-  width: 250px;
-  border-color: rgba(212,168,67,0.3);
-  background: linear-gradient(180deg, rgba(212,168,67,0.05) 0%, var(--navy-card) 100%);
+  border-color: rgba(212,168,67,0.4);
 }
-
 .match-card.final-card:hover {
   border-color: var(--gold);
-  box-shadow: 0 8px 40px rgba(212,168,67,0.25);
+  box-shadow: 0 4px 20px rgba(212,168,67,0.35);
 }
 
-.match-meta {
-  padding: 7px 12px;
-  border-bottom: 1px solid var(--navy-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.match-id {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.08em;
+/* Match number tag on card */
+.match-num-tag {
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
   font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #656b78;
+  width: 16px;
+  text-align: right;
+  pointer-events: none;
 }
 
-.match-datetime {
-  font-size: 0.65rem;
-  color: var(--text-muted);
+.match-rows {
   display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.match-datetime .time { color: var(--gold); font-weight: 600; font-family: 'Rajdhani', sans-serif; }
-
-.team-row {
-  padding: 9px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background var(--transition);
-  position: relative;
-}
-
-.team-row:first-of-type { border-bottom: 1px solid rgba(255,255,255,0.04); }
-
-.team-row.winner { background: rgba(212,168,67,0.08); }
-.team-row.loser  { opacity: 0.5; }
-
-.team-seed {
-  width: 20px;
-  height: 20px;
+  flex-direction: column;
+  height: 100%;
   border-radius: 4px;
-  background: var(--navy-mid);
-  display: grid;
-  place-items: center;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  flex-shrink: 0;
-  font-family: 'Rajdhani', sans-serif;
+  overflow: hidden;
 }
 
-.team-color-bar {
+/* ── Team Row inside Challonge card ── */
+.team-row {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  background: #2d3037;
+  position: relative;
+  transition: background 0.15s ease;
+}
+
+.team-row:first-child {
+  border-bottom: 1px solid #3a3d46;
+}
+
+.team-row.winner {
+  background: #222429;
+}
+.team-row.winner .team-name {
+  color: #ffffff;
+  font-weight: 700;
+}
+.team-row.winner .team-score-box {
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.team-row.loser {
+  opacity: 0.52;
+}
+
+/* Seed column */
+.team-seed {
+  width: 26px;
+  height: 100%;
+  background: #23252a;
+  border-right: 1px solid #383b43;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #7b8190;
+  flex-shrink: 0;
+}
+
+/* Team info (middle) */
+.team-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  min-width: 0;
+}
+
+.team-color-indicator {
   width: 3px;
-  height: 24px;
+  height: 14px;
   border-radius: 2px;
   flex-shrink: 0;
 }
 
 .team-name {
-  flex: 1;
-  font-size: 0.82rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.84rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #d1d5db;
   letter-spacing: 0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-family: 'Rajdhani', sans-serif;
 }
 
-.team-name.tbd { color: var(--text-muted); font-style: italic; font-weight: 400; }
-.team-name.bye { color: var(--text-muted); }
-
-.team-score {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-  font-family: 'Rajdhani', sans-serif;
-  min-width: 20px;
-  text-align: right;
+.team-name.tbd {
+  color: #656b78;
+  font-style: italic;
+  font-weight: 500;
+}
+.team-name.bye {
+  color: #656b78;
+  font-weight: 600;
 }
 
-.team-row.winner .team-score { color: var(--gold); }
-
-.winner-crown {
-  position: absolute;
-  right: 8px;
-  font-size: 0.75rem;
-  opacity: 0;
-  transition: opacity var(--transition);
-}
-.team-row.winner .winner-crown { opacity: 1; }
-
-/* ── Bracket Connectors (SVG) ── */
-.connector-col {
+/* Score box (right) */
+.team-score-box {
+  width: 30px;
+  height: 100%;
+  background: #23252a;
+  border-left: 1px solid #383b43;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #9ba1b0;
   flex-shrink: 0;
 }
 
-/* ============================================================
-   CHAMPION DISPLAY
-   ============================================================ */
-.champion-section {
-  text-align: center;
-  padding: 24px 20px;
+/* ── Challonge Champion Node (Podium) ── */
+.champion-node {
+  z-index: 2;
 }
 
-.champion-trophy {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-  filter: drop-shadow(0 4px 12px rgba(212,168,67,0.5));
+.champ-card {
+  width: 160px;
+  height: 58px;
+  background: linear-gradient(135deg, rgba(212,168,67,0.12), #23252a);
+  border: 1px solid rgba(212,168,67,0.4);
+  border-radius: 5px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
 }
 
-.champion-label {
+.champ-trophy-badge {
+  font-size: 1.4rem;
+  filter: drop-shadow(0 2px 8px rgba(212,168,67,0.4));
+  flex-shrink: 0;
+}
+
+.champ-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.champ-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--gold);
-  letter-spacing: 0.2em;
-  margin-bottom: 6px;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  margin-bottom: 2px;
 }
 
-.champion-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.6rem;
-  color: var(--text-primary);
-}
-
-.champion-tbd {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  font-style: italic;
+.champ-winner-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ============================================================

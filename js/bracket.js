@@ -13,22 +13,22 @@
   const matchModal      = document.getElementById("match-modal");
   const connectionBadge = document.getElementById("connection-badge");
 
-  // ── Layout constants ────────────────────────────────────
-  const CARD_W   = 240;   // match card width (px)
-  const CARD_H   = 96;    // match card height (px)
-  const SLOT_H   = 160;   // vertical space per base-round slot
-  const COL_GAP  = 80;    // horizontal gap between columns (connector space)
+  // ── Layout constants (Challonge-style proportions) ────────
+  const CARD_W   = 220;   // match card width (px)
+  const CARD_H   = 58;    // match card height (px)
+  const SLOT_H   = 116;   // vertical space per base-round slot
+  const COL_GAP  = 64;    // horizontal gap between columns
   const BASE_N   = 4;     // number of QF matches
   const ROUNDS   = 3;     // QF, SF, Final
-  const LABELS   = ["Quarter Final", "Semi Final", "Final"];
-  const LABEL_H  = 40;    // space above bracket for round labels
-  const CHAMP_W  = 120;   // champion column width
+  const LABELS   = ["QUARTERFINALS", "SEMIFINALS", "FINALS"];
+  const LABEL_H  = 38;    // space above bracket for round labels
+  const CHAMP_W  = 160;   // champion column width
 
   const TOTAL_H  = BASE_N * SLOT_H;
-  const TOTAL_W  = ROUNDS * CARD_W + (ROUNDS - 1) * COL_GAP + COL_GAP + CHAMP_W;
+  const TOTAL_W  = ROUNDS * CARD_W + (ROUNDS - 1) * COL_GAP + COL_GAP + CHAMP_W + 30;
 
   // Position helpers
-  function colX(round)           { return round * (CARD_W + COL_GAP); }
+  function colX(round)           { return round * (CARD_W + COL_GAP) + 24; }
   function slotSize(round)       { return SLOT_H * Math.pow(2, round); }
   function centerY(round, idx)   { return slotSize(round) / 2 + idx * slotSize(round); }
   function cardTop(round, idx)   { return centerY(round, idx) - CARD_H / 2; }
@@ -110,7 +110,7 @@
     document.title = t.name || "Voly Bracket";
   }
 
-  // ── BRACKET — absolute layout + SVG overlay ───────────────
+  // ── BRACKET — absolute layout + SVG overlay (Challonge-style) ──
   function renderBracket() {
     if (!bracketCanvas || !data) return;
     const { resolveMatches, getTeamById } = window.VolyData;
@@ -134,16 +134,14 @@
     // ── Round labels ───────────────────────────────────────
     LABELS.forEach((lbl, r) => {
       const el = document.createElement("div");
+      el.className = "round-header-wrap";
       el.style.cssText = `
         position:absolute;
         top:0;left:${colX(r)}px;
         width:${CARD_W}px;height:${LABEL_H}px;
         display:flex;align-items:center;justify-content:center;
-        font-family:'Bebas Neue',sans-serif;font-size:.85rem;
-        letter-spacing:.15em;
-        color:${r === 2 ? "var(--gold)" : "var(--text-muted)"};
       `;
-      el.textContent = lbl;
+      el.innerHTML = `<span class="round-badge ${r === 2 ? 'final-badge' : ''}">${lbl}</span>`;
       bracketCanvas.appendChild(el);
     });
 
@@ -174,7 +172,7 @@
       const fromMatches = roundMatches[r];
       const toMatches   = roundMatches[r + 1];
 
-      toMatches.forEach((_, ti) => {
+      toMatches.forEach((match, ti) => {
         const topIdx = ti * 2;
         const botIdx = ti * 2 + 1;
 
@@ -186,7 +184,7 @@
         const botCY = LABEL_H + centerY(r, botIdx);
         const toCY  = LABEL_H + centerY(r + 1, ti);
 
-        const S = "#1e2d50", W = "1.5";
+        const S = "#525763", W = "2";
 
         // Arm from top card
         line(svg, x1, topCY, xMid, topCY, S, W);
@@ -196,31 +194,37 @@
         line(svg, xMid, topCY, xMid, botCY, S, W);
         // Horizontal to next card
         line(svg, xMid, toCY, x2, toCY, S, W);
+
+        // Challonge-style match index label on connector line
+        const nextNum = match.id.replace("m", "");
+        drawMatchLabel(svg, xMid + 6, toCY - 6, nextNum);
       });
     }
 
     // ── Connector Final → Champion ─────────────────────────
     const finalPos = { x: colX(2) + CARD_W, y: LABEL_H + centerY(2, 0) };
-    const champX   = colX(ROUNDS) + 10;
-    line(svg, finalPos.x, finalPos.y, champX, finalPos.y, "#1e2d50", "1.5");
+    const champX   = colX(ROUNDS) + 16;
+    line(svg, finalPos.x, finalPos.y, champX, finalPos.y, "#525763", "2");
 
-    // ── Champion display ───────────────────────────────────
+    // ── Champion display (Challonge-style podium) ───────────
     const finalMatch = roundMatches[2][0];
     const champion   = finalMatch?.winner ? getTeamById(data, finalMatch.winner) : null;
     const champDiv   = document.createElement("div");
+    champDiv.className = "champion-node animate-in";
     champDiv.style.cssText = `
       position:absolute;
       left:${champX}px;
-      top:${LABEL_H + centerY(2,0) - 64}px;
-      text-align:center;
+      top:${LABEL_H + centerY(2,0) - 29}px;
       width:${CHAMP_W}px;
     `;
     champDiv.innerHTML = `
-      <div class="champion-trophy">🏆</div>
-      <div class="champion-label">CHAMPION</div>
-      ${champion
-        ? `<div class="champion-name" style="color:var(--gold);font-size:1rem">${champion.name}</div>`
-        : `<div class="champion-tbd">Belum ditentukan</div>`}
+      <div class="champ-card ${champion ? 'has-champ' : ''}">
+        <div class="champ-trophy-badge">🏆</div>
+        <div class="champ-details">
+          <div class="champ-title">CHAMPION</div>
+          <div class="champ-winner-name">${champion ? champion.name : 'Belum ditentukan'}</div>
+        </div>
+      </div>
     `;
     bracketCanvas.appendChild(champDiv);
   }
@@ -232,29 +236,40 @@
     el.setAttribute("x2", x2); el.setAttribute("y2", y2);
     el.setAttribute("stroke", stroke);
     el.setAttribute("stroke-width", sw);
-    el.setAttribute("stroke-linecap", "round");
+    el.setAttribute("stroke-linecap", "square");
     svg.appendChild(el);
   }
 
-  // ── Build match card ───────────────────────────────────────
+  // ── SVG text label helper ──────────────────────────────────
+  function drawMatchLabel(svg, x, y, text) {
+    const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    txt.setAttribute("x", x);
+    txt.setAttribute("y", y);
+    txt.setAttribute("fill", "#6b7280");
+    txt.setAttribute("font-family", "'Rajdhani', sans-serif");
+    txt.setAttribute("font-size", "11");
+    txt.setAttribute("font-weight", "700");
+    txt.textContent = text;
+    svg.appendChild(txt);
+  }
+
+  // ── Build match card (Challonge-style) ──────────────────────
   function buildMatchCard(match, roundIdx) {
     const { getTeamById } = window.VolyData;
     const card = document.createElement("div");
-    card.className = `match-card${roundIdx === 2 ? " final-card" : ""}`;
+    card.className = `match-card${roundIdx === 2 ? " final-card" : ""}${match.winner ? " has-winner" : ""}`;
     card.dataset.matchId = match.id;
 
     const t1 = match.team1 ? getTeamById(data, match.team1) : null;
     const t2 = match.team2 ? getTeamById(data, match.team2) : null;
+    const matchNum = match.id.replace("m", "");
 
     card.innerHTML = `
-      <div class="match-meta">
-        <span class="match-id">${match.roundName.toUpperCase()}</span>
-        <span class="match-datetime">
-          ${(match.date || "").replace("Agustus","Ags")} · <span class="time">${match.time || "—"}</span>
-        </span>
+      <div class="match-num-tag" title="Match ${matchNum}">${matchNum}</div>
+      <div class="match-rows">
+        ${teamRow(t1, match.team2 === null ? "BYE" : null, match.score1, match.winner, match, 1)}
+        ${teamRow(t2, null,                                 match.score2, match.winner, match, 2)}
       </div>
-      ${teamRow(t1, match.team2 === null ? "BYE" : null, match.score1, match.winner, match, 1)}
-      ${teamRow(t2, null,                                 match.score2, match.winner, match, 2)}
     `;
     return card;
   }
@@ -267,25 +282,35 @@
     if (isWinner) cls += " winner";
     if (isLoser)  cls += " loser";
 
-    let colorBar = "", nameHtml = "";
+    // Seed number calculation
+    let seedNum = "";
+    if (team) {
+      const idx = (data?.teams || []).findIndex(t => t.id === team.id);
+      seedNum = idx !== -1 ? (idx + 1) : "";
+    }
+
+    let colorIndicator = "", nameHtml = "";
     if (!teamId && !byeLabel) {
       nameHtml = `<span class="team-name tbd">TBD</span>`;
     } else if (byeLabel === "BYE") {
       nameHtml = `<span class="team-name bye">BYE</span>`;
     } else if (team) {
-      colorBar = `<div class="team-color-bar" style="background:${team.color}"></div>`;
-      nameHtml = `<span class="team-name">${team.name}</span>`;
+      colorIndicator = `<span class="team-color-indicator" style="background:${team.color}"></span>`;
+      nameHtml = `<span class="team-name" title="${team.name}">${team.name}</span>`;
     } else {
       nameHtml = `<span class="team-name tbd">TBD</span>`;
     }
 
-    const scoreText = score !== null && score !== undefined ? score : "";
+    const scoreText = (score !== null && score !== undefined) ? score : "";
+
     return `
       <div class="${cls}">
-        <div class="team-seed">${slot}</div>
-        ${colorBar}${nameHtml}
-        <span class="team-score">${scoreText}</span>
-        <span class="winner-crown">${isWinner ? "👑" : ""}</span>
+        <div class="team-seed">${seedNum}</div>
+        <div class="team-info">
+          ${colorIndicator}
+          ${nameHtml}
+        </div>
+        <div class="team-score-box">${scoreText}</div>
       </div>`;
   }
 
