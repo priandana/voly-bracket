@@ -478,7 +478,7 @@
         </div>
 
         <!-- MATCHUP ARENA -->
-        <div class="modal-matchup-arena" id="modal-matchup-arena">
+        <div class="modal-matchup-arena" id="modal-matchup-arena" style="cursor:pointer" title="Klik untuk mainkan animasi spike!">
           ${(isT1Winner || isT2Winner) ? `
           <div class="volleyball-spike-arena ${isT1Winner ? 'spike-t1-to-t2' : 'spike-t2-to-t1'} play-spike" id="volleyball-spike-track">
             <div class="volley-ball-wrapper">
@@ -512,14 +512,6 @@
             <div class="modal-team-name" style="color:${t2 ? t2c : 'var(--text-muted)'}">${t2n}</div>
           </div>
         </div>
-
-        ${(isT1Winner || isT2Winner) ? `
-        <div style="text-align:center;margin-top:-8px;margin-bottom:14px;">
-          <button type="button" class="btn-replay-smash" id="btn-replay-smash">
-            🏐 Smash Bola Lagi!
-          </button>
-        </div>
-        ` : ''}
 
         <!-- WINNER SELECTION (1-CLICK) -->
         <div style="margin-bottom:16px;">
@@ -578,6 +570,15 @@
       const s1Input = document.getElementById("quick-score-1");
       const s2Input = document.getElementById("quick-score-2");
 
+      function triggerSpikeAnim() {
+        const track = document.getElementById("volleyball-spike-track");
+        if (track) {
+          track.classList.remove("play-spike");
+          void track.offsetWidth;
+          track.classList.add("play-spike");
+        }
+      }
+
       // Auto-detect winner as scores are typed!
       function autoDetectWinner() {
         const val1 = s1Input?.value.trim();
@@ -605,6 +606,7 @@
           selectedWinner = match.team1;
           btnWin1.className = "btn btn-primary";
           if (btnWin2) btnWin2.className = "btn btn-secondary";
+          triggerSpikeAnim();
         };
       }
       if (btnWin2 && match.team2) {
@@ -612,17 +614,11 @@
           selectedWinner = match.team2;
           btnWin2.className = "btn btn-primary";
           if (btnWin1) btnWin1.className = "btn btn-secondary";
+          triggerSpikeAnim();
         };
       }
 
-      document.getElementById("btn-replay-smash")?.addEventListener("click", () => {
-        const track = document.getElementById("volleyball-spike-track");
-        if (track) {
-          track.classList.remove("play-spike");
-          void track.offsetWidth;
-          track.classList.add("play-spike");
-        }
-      });
+      document.getElementById("modal-matchup-arena")?.addEventListener("click", triggerSpikeAnim);
 
       document.getElementById("btn-quick-reset")?.addEventListener("click", async () => {
         const targetMatch = data.matches.find(m => m.id === matchId);
@@ -673,7 +669,7 @@
       // ═════════════════════════════════════════════════
       body.innerHTML = `
         <!-- MATCHUP ARENA -->
-        <div class="modal-matchup-arena" id="modal-matchup-arena">
+        <div class="modal-matchup-arena" id="modal-matchup-arena" style="cursor:pointer" title="Klik untuk mainkan animasi spike!">
           ${(isT1Winner || isT2Winner) ? `
           <div class="volleyball-spike-arena ${isT1Winner ? 'spike-t1-to-t2' : 'spike-t2-to-t1'} play-spike" id="volleyball-spike-track">
             <div class="volley-ball-wrapper">
@@ -707,14 +703,6 @@
             <div class="modal-team-name" style="color:${t2 ? t2c : 'var(--text-muted)'}">${t2n}</div>
           </div>
         </div>
-
-        ${(isT1Winner || isT2Winner) ? `
-        <div style="text-align:center;margin-top:-8px;margin-bottom:14px;">
-          <button type="button" class="btn-replay-smash" id="btn-replay-smash-spec">
-            🏐 Smash Bola Lagi!
-          </button>
-        </div>
-        ` : ''}
 
         <!-- SCOREBOARD -->
         <div class="modal-scoreboard">
@@ -761,7 +749,7 @@
         </div>
       `;
 
-      document.getElementById("btn-replay-smash-spec")?.addEventListener("click", () => {
+      document.getElementById("modal-matchup-arena")?.addEventListener("click", () => {
         const track = document.getElementById("volleyball-spike-track");
         if (track) {
           track.classList.remove("play-spike");
