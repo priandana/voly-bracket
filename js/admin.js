@@ -212,14 +212,25 @@
     const match = data.matches.find(m => m.id === matchId);
     if (!match) return;
 
-    if (field==="score1") match.score1 = val===""?null:parseInt(val,10);
-    else if(field==="score2") match.score2 = val===""?null:parseInt(val,10);
+    if (field==="score1") {
+      match.score1 = val===""?null:parseInt(val,10);
+      if (match.score1 !== null && match.score2 !== null && match.score1 !== match.score2) {
+        match.winner = match.score1 > match.score2 ? match.team1 : match.team2;
+      }
+    }
+    else if(field==="score2") {
+      match.score2 = val===""?null:parseInt(val,10);
+      if (match.score1 !== null && match.score2 !== null && match.score1 !== match.score2) {
+        match.winner = match.score1 > match.score2 ? match.team1 : match.team2;
+      }
+    }
     else if(field==="date")   match.date = val;
     else if(field==="time")   match.time = val;
     else if(field==="winner") match.winner = val||null;
 
     await saveData(data);
     renderDashboard();
+    renderMatchesAdmin();
     showToast(window.VolyData.FB.isConnected ? "✅ Disimpan ke Firebase!" : "💾 Disimpan (offline)", "success");
   }
 

@@ -195,6 +195,19 @@ async function initDB() {
           remote.matches = DEFAULT_DATA.matches;
           updated = true;
         }
+
+        // Auto-heal winner if scores were entered but winner was unselected
+        remote.matches.forEach(m => {
+          if (!m.winner && m.score1 !== null && m.score2 !== null && m.score1 !== undefined && m.score2 !== undefined && m.score1 !== m.score2) {
+            if (m.score1 > m.score2 && m.team1) {
+              m.winner = m.team1;
+              updated = true;
+            } else if (m.score2 > m.score1 && m.team2) {
+              m.winner = m.team2;
+              updated = true;
+            }
+          }
+        });
       }
 
       if (updated) {
@@ -231,6 +244,17 @@ async function initDB() {
         _memCache.matches = DEFAULT_DATA.matches;
         updated = true;
       }
+      _memCache.matches.forEach(m => {
+        if (!m.winner && m.score1 !== null && m.score2 !== null && m.score1 !== undefined && m.score2 !== undefined && m.score1 !== m.score2) {
+          if (m.score1 > m.score2 && m.team1) {
+            m.winner = m.team1;
+            updated = true;
+          } else if (m.score2 > m.score1 && m.team2) {
+            m.winner = m.team2;
+            updated = true;
+          }
+        }
+      });
     }
     if (updated) saveLocalData(_memCache);
   }

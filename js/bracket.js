@@ -478,7 +478,20 @@
         </div>
 
         <!-- MATCHUP ARENA -->
-        <div class="modal-matchup-arena">
+        <div class="modal-matchup-arena" id="modal-matchup-arena">
+          ${(isT1Winner || isT2Winner) ? `
+          <div class="volleyball-spike-arena ${isT1Winner ? 'spike-t1-to-t2' : 'spike-t2-to-t1'} play-spike" id="volleyball-spike-track">
+            <div class="volley-ball-wrapper">
+              <div class="volley-ball">🏐</div>
+              <div class="volley-flame-trail"></div>
+            </div>
+            <div class="volley-smash-burst">
+              <span class="burst-emoji">💥</span>
+              <span class="burst-label">SPIKE!</span>
+            </div>
+          </div>
+          ` : ''}
+
           <div class="modal-team-card ${isT1Winner ? 'is-winner' : (isT2Winner ? 'is-loser' : '')}">
             <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t1c}dd,${t1c}88);border:2px solid ${t1c};">
               ${isT1Winner ? '<span class="team-crown-icon">👑</span>' : ''}
@@ -499,6 +512,14 @@
             <div class="modal-team-name" style="color:${t2 ? t2c : 'var(--text-muted)'}">${t2n}</div>
           </div>
         </div>
+
+        ${(isT1Winner || isT2Winner) ? `
+        <div style="text-align:center;margin-top:-8px;margin-bottom:14px;">
+          <button type="button" class="btn-replay-smash" id="btn-replay-smash">
+            🏐 Smash Bola Lagi!
+          </button>
+        </div>
+        ` : ''}
 
         <!-- WINNER SELECTION (1-CLICK) -->
         <div style="margin-bottom:16px;">
@@ -554,6 +575,30 @@
 
       const btnWin1 = document.getElementById("btn-pick-win-1");
       const btnWin2 = document.getElementById("btn-pick-win-2");
+      const s1Input = document.getElementById("quick-score-1");
+      const s2Input = document.getElementById("quick-score-2");
+
+      // Auto-detect winner as scores are typed!
+      function autoDetectWinner() {
+        const val1 = s1Input?.value.trim();
+        const val2 = s2Input?.value.trim();
+        if (val1 !== "" && val2 !== "") {
+          const num1 = parseInt(val1, 10);
+          const num2 = parseInt(val2, 10);
+          if (num1 > num2 && match.team1) {
+            selectedWinner = match.team1;
+            if (btnWin1) btnWin1.className = "btn btn-primary";
+            if (btnWin2) btnWin2.className = "btn btn-secondary";
+          } else if (num2 > num1 && match.team2) {
+            selectedWinner = match.team2;
+            if (btnWin2) btnWin2.className = "btn btn-primary";
+            if (btnWin1) btnWin1.className = "btn btn-secondary";
+          }
+        }
+      }
+
+      s1Input?.addEventListener("input", autoDetectWinner);
+      s2Input?.addEventListener("input", autoDetectWinner);
 
       if (btnWin1 && match.team1) {
         btnWin1.onclick = () => {
@@ -570,6 +615,15 @@
         };
       }
 
+      document.getElementById("btn-replay-smash")?.addEventListener("click", () => {
+        const track = document.getElementById("volleyball-spike-track");
+        if (track) {
+          track.classList.remove("play-spike");
+          void track.offsetWidth;
+          track.classList.add("play-spike");
+        }
+      });
+
       document.getElementById("btn-quick-reset")?.addEventListener("click", async () => {
         const targetMatch = data.matches.find(m => m.id === matchId);
         if (targetMatch) {
@@ -585,18 +639,26 @@
       });
 
       document.getElementById("btn-quick-save")?.addEventListener("click", async () => {
-        const s1 = document.getElementById("quick-score-1")?.value.trim();
-        const s2 = document.getElementById("quick-score-2")?.value.trim();
+        const s1 = s1Input?.value.trim();
+        const s2 = s2Input?.value.trim();
         const d  = document.getElementById("quick-date")?.value.trim();
         const tm = document.getElementById("quick-time")?.value.trim();
 
         const targetMatch = data.matches.find(m => m.id === matchId);
         if (targetMatch) {
+          let finalWinner = selectedWinner;
+          if (!finalWinner && s1 !== "" && s2 !== "") {
+            const n1 = parseInt(s1, 10);
+            const n2 = parseInt(s2, 10);
+            if (n1 > n2 && targetMatch.team1) finalWinner = targetMatch.team1;
+            else if (n2 > n1 && targetMatch.team2) finalWinner = targetMatch.team2;
+          }
+
           targetMatch.score1 = s1 === "" ? null : parseInt(s1, 10);
           targetMatch.score2 = s2 === "" ? null : parseInt(s2, 10);
           targetMatch.date   = d || targetMatch.date;
           targetMatch.time   = tm || targetMatch.time;
-          targetMatch.winner = selectedWinner || null;
+          targetMatch.winner = finalWinner || null;
 
           await window.VolyData.saveData(data);
           renderAll();
@@ -611,7 +673,20 @@
       // ═════════════════════════════════════════════════
       body.innerHTML = `
         <!-- MATCHUP ARENA -->
-        <div class="modal-matchup-arena">
+        <div class="modal-matchup-arena" id="modal-matchup-arena">
+          ${(isT1Winner || isT2Winner) ? `
+          <div class="volleyball-spike-arena ${isT1Winner ? 'spike-t1-to-t2' : 'spike-t2-to-t1'} play-spike" id="volleyball-spike-track">
+            <div class="volley-ball-wrapper">
+              <div class="volley-ball">🏐</div>
+              <div class="volley-flame-trail"></div>
+            </div>
+            <div class="volley-smash-burst">
+              <span class="burst-emoji">💥</span>
+              <span class="burst-label">SPIKE!</span>
+            </div>
+          </div>
+          ` : ''}
+
           <div class="modal-team-card ${isT1Winner ? 'is-winner' : (isT2Winner ? 'is-loser' : '')}">
             <div class="modal-team-avatar" style="background:linear-gradient(135deg,${t1c}dd,${t1c}88);border:2px solid ${t1c};">
               ${isT1Winner ? '<span class="team-crown-icon">👑</span>' : ''}
@@ -632,6 +707,14 @@
             <div class="modal-team-name" style="color:${t2 ? t2c : 'var(--text-muted)'}">${t2n}</div>
           </div>
         </div>
+
+        ${(isT1Winner || isT2Winner) ? `
+        <div style="text-align:center;margin-top:-8px;margin-bottom:14px;">
+          <button type="button" class="btn-replay-smash" id="btn-replay-smash-spec">
+            🏐 Smash Bola Lagi!
+          </button>
+        </div>
+        ` : ''}
 
         <!-- SCOREBOARD -->
         <div class="modal-scoreboard">
@@ -677,6 +760,15 @@
           </a>
         </div>
       `;
+
+      document.getElementById("btn-replay-smash-spec")?.addEventListener("click", () => {
+        const track = document.getElementById("volleyball-spike-track");
+        if (track) {
+          track.classList.remove("play-spike");
+          void track.offsetWidth;
+          track.classList.add("play-spike");
+        }
+      });
 
       document.getElementById("link-quick-admin")?.addEventListener("click", e => {
         e.preventDefault();
