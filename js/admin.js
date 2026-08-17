@@ -113,8 +113,9 @@
     if (tbody) {
       tbody.innerHTML = "";
       resolved.forEach(m => {
+        const isT2Bye = m.round === 1 && (m.id === "m1" || m.id === "m4");
         const t1n = m.team1 ? getTeamById(data,m.team1)?.name : "TBD";
-        const t2n = m.team2 ? getTeamById(data,m.team2)?.name : (m.team1?"BYE":"TBD");
+        const t2n = m.team2 ? getTeamById(data,m.team2)?.name : (isT2Bye ? "BYE" : "TBD");
         const wn  = m.winner ? getTeamById(data,m.winner)?.name : null;
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -137,11 +138,12 @@
     const resolved = resolveMatches(data);
 
     resolved.forEach(match => {
+      const isT2Bye = match.round === 1 && (match.id === "m1" || match.id === "m4");
       const t1 = match.team1 ? getTeamById(data, match.team1) : null;
       const t2 = match.team2 ? getTeamById(data, match.team2) : null;
-      const t1Name = t1?.name || (match.team2===null?"BYE":"TBD");
-      const t2Name = t2?.name || (match.team1!==null&&!match.team2?"BYE":"TBD");
-      const t1c = t1?.color||"#4a5d80", t2c = t2?.color||"#4a5d80";
+      const t1Name = t1?.name || "TBD";
+      const t2Name = t2?.name || (isT2Bye ? "BYE" : "TBD");
+      const t1c = t1?.color||"#4a5d80", t2c = t2?.color||(isT2Bye ? "#4a5d80" : "#64748b");
 
       const winOpts = [
         `<option value="">— Pilih Pemenang —</option>`,

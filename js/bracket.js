@@ -361,14 +361,15 @@
     const resolved = resolveMatches(data);
     scheduleBody.innerHTML = "";
     resolved.forEach(match => {
+      const isT2Bye = match.round === 1 && (match.id === "m1" || match.id === "m4");
       const t1 = match.team1 ? getTeamById(data, match.team1) : null;
       const t2 = match.team2 ? getTeamById(data, match.team2) : null;
-      const t1n = t1?.name || (match.team2 === null ? "BYE" : "TBD");
-      const t2n = t2?.name || (match.team1 !== null && !match.team2 ? "BYE" : "TBD");
-      const t1c = t1?.color || "#4a5d80", t2c = t2?.color || "#4a5d80";
+      const t1n = t1?.name || "TBD";
+      const t2n = t2?.name || (isT2Bye ? "BYE" : "TBD");
+      const t1c = t1?.color || "#4a5d80", t2c = t2?.color || (isT2Bye ? "#4a5d80" : "#64748b");
       let status = "tbd", label = "Belum Dijadwalkan";
       if (match.winner) { status = "done"; label = "Selesai"; }
-      else if (match.team1 && (match.team2 || match.team2 === null)) { status = "upcoming"; label = "Akan Datang"; }
+      else if (match.team1 && (match.team2 || isT2Bye)) { status = "upcoming"; label = "Akan Datang"; }
       const tr = document.createElement("tr");
       tr.style.cursor = "pointer";
       tr.innerHTML = `
@@ -444,14 +445,15 @@
     if (!match) return;
 
     const isAdmin = sessionStorage.getItem("voly_admin_auth") === "1";
+    const isT2Bye = match.round === 1 && (match.id === "m1" || match.id === "m4");
     const t1     = match.team1 ? getTeamById(data, match.team1) : null;
     const t2     = match.team2 ? getTeamById(data, match.team2) : null;
     const winner = match.winner ? getTeamById(data, match.winner) : null;
-    const t1n  = t1?.name || (match.team2 === null ? "BYE" : "TBD");
-    const t2n  = t2?.name || (match.team1 !== null && !match.team2 ? "BYE" : "TBD");
-    const t1c  = t1?.color || "#3b82f6", t2c = t2?.color || "#ef4444";
-    const t1i  = t1?.shortName || (match.team2 === null ? "BYE" : "TBD");
-    const t2i  = t2?.shortName || (match.team1 !== null && !match.team2 ? "BYE" : "TBD");
+    const t1n  = t1?.name || "TBD";
+    const t2n  = t2?.name || (isT2Bye ? "BYE" : "TBD");
+    const t1c  = t1?.color || "#3b82f6", t2c = t2?.color || (isT2Bye ? "#4a5d80" : "#64748b");
+    const t1i  = t1?.shortName || "TBD";
+    const t2i  = t2?.shortName || (isT2Bye ? "BYE" : "TBD");
 
     const isT1Winner = match.winner && match.winner === match.team1;
     const isT2Winner = match.winner && match.winner === match.team2;
@@ -568,17 +570,25 @@
         };
       }
 
-      document.getElementById("btn-quick-reset")?.addEventListener("click", () => {
-        selectedWinner = null;
-        if (btnWin1) btnWin1.className = "btn btn-secondary";
-        if (btnWin2) btnWin2.className = "btn btn-secondary";
+      document.getElementById("btn-quick-reset")?.addEventListener("click", async () => {
+        const targetMatch = data.matches.find(m => m.id === matchId);
+        if (targetMatch) {
+          targetMatch.winner = null;
+          targetMatch.score1 = null;
+          targetMatch.score2 = null;
+
+          await window.VolyData.saveData(data);
+          renderAll();
+          closeModal();
+          showLiveToast("↺ Pemenang & skor pertandingan berhasil direset!");
+        }
       });
 
       document.getElementById("btn-quick-save")?.addEventListener("click", async () => {
-        const s1 = document.getElementById("quick-score-1")?.value;
-        const s2 = document.getElementById("quick-score-2")?.value;
-        const d  = document.getElementById("quick-date")?.value;
-        const tm = document.getElementById("quick-time")?.value;
+        const s1 = document.getElementById("quick-score-1")?.value.trim();
+        const s2 = document.getElementById("quick-score-2")?.value.trim();
+        const d  = document.getElementById("quick-date")?.value.trim();
+        const tm = document.getElementById("quick-time")?.value.trim();
 
         const targetMatch = data.matches.find(m => m.id === matchId);
         if (targetMatch) {
@@ -591,7 +601,7 @@
           await window.VolyData.saveData(data);
           renderAll();
           closeModal();
-          showLiveToast();
+          showLiveToast("Match berhasil diperbarui & disimpan!");
         }
       });
 
