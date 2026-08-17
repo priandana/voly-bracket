@@ -27,17 +27,17 @@ const DEFAULT_DATA = {
       players: ["ucok johanes s","ahmad rian","RICKY","m fauzan","abdul halim","eka widiansyah","iwan hermawan","indra lesmana","aldi"]
     },
     {
-      id: "team4", name: "WHAREHOUSE 4", shortName: "WH4", color: "#8b5cf6",
+      id: "team4", name: "WAREHOUSE 4", shortName: "WH4", color: "#8b5cf6",
       captain: "Sandy Maulana",
       players: ["Denada","Suherman","CAHAYA MUKTI","firdaus","Priandana mangraja lubis","Asep m firman","FUAR RESTU","rian","haikal","Sandy Maulana","cun cun"]
     },
     {
-      id: "team5", name: "WHAREHOUSE 5", shortName: "WH5", color: "#ef4444",
+      id: "team5", name: "WAREHOUSE 5", shortName: "WH5", color: "#ef4444",
       captain: "Bagus maulana yusup",
       players: ["Ceptiana hidayat","Bagus maulana yusup","Samba s","iwan","Gugun Gunawan","Ahmad Sasa Komara","Muhammad Revy Farizqy","Muhammad Zaenal Mutaqin","Adam Julianto","EKO SUTANTO","M jayan"]
     },
     {
-      id: "team6", name: "WHAREHOUSE 6", shortName: "WH6", color: "#f97316",
+      id: "team6", name: "WAREHOUSE 6", shortName: "WH6", color: "#f97316",
       captain: "ANAN KOSWARA",
       players: ["ANAN KOSWARA","ACEP","Kisro","Erwin","Roby","Rediana Irwansyah","RUSMAN","MOMO ASEP SUHENDAR","Januar","Muhamad Abdul Azis","Muhammad Revy Farizqy"]
     }
@@ -167,12 +167,16 @@ async function initDB() {
     if (remote) {
       let updated = false;
 
-      // Auto-sync official captains & rosters
+      // Auto-sync official captains & rosters & clean typos
       DEFAULT_DATA.teams.forEach(defTeam => {
         const target = (remote.teams || []).find(t => t.id === defTeam.id);
         if (target) {
           if (!target.captain && defTeam.captain) {
             target.captain = defTeam.captain;
+            updated = true;
+          }
+          if (target.name && target.name.includes("WHAREHOUSE")) {
+            target.name = target.name.replace(/WHAREHOUSE/g, "WAREHOUSE");
             updated = true;
           }
           if (JSON.stringify(target.players).includes("Ully Nope") || target.players.length !== defTeam.players.length) {
@@ -209,10 +213,16 @@ async function initDB() {
     let updated = false;
     DEFAULT_DATA.teams.forEach(defTeam => {
       const target = (_memCache.teams || []).find(t => t.id === defTeam.id);
-      if (target && !target.captain && defTeam.captain) {
-        target.captain = defTeam.captain;
-        target.players = defTeam.players;
-        updated = true;
+      if (target) {
+        if (!target.captain && defTeam.captain) {
+          target.captain = defTeam.captain;
+          target.players = defTeam.players;
+          updated = true;
+        }
+        if (target.name && target.name.includes("WHAREHOUSE")) {
+          target.name = target.name.replace(/WHAREHOUSE/g, "WAREHOUSE");
+          updated = true;
+        }
       }
     });
     if (_memCache.matches && _memCache.matches.length > 0) {
